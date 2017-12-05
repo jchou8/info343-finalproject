@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class Link extends Component {
+export default class Bookmark extends Component {
   render() {
     return (
       <div>

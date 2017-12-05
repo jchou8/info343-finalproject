@@ -119,7 +119,13 @@ class App extends Component {
       <HashRouter>
         <div className='app'>
           <div className='wrapper'>
-            <Navigation />
+            <Navigation
+              user={this.state.user}
+              signOutCallback={() => this.handleSignOut()}
+              toggleCallback={() => this.toggleNavbar()}
+              closeCallback={() => this.closeNavbar()}
+              active={this.state.navActive}
+            />
 
             <div className='container main-content'>
               <main>
@@ -128,7 +134,7 @@ class App extends Component {
 
                 <Switch>
                   <Route exact path='/' render={renderLinkList} />
-                  <Route path='/join' render={renderRegister} />
+                  <Route path='/register' render={renderRegister} />
                   <Route path='/login' render={renderLogin} />
                   <Route path='/bookmarks/:convoName' render={renderLinkList} />
                 </Switch>
