@@ -6,6 +6,7 @@ import './styles/Navigation.css';
 
 // Pop-out sidebar menu, with header, current user, and folder list
 export default class Navigation extends Component {
+
   render() {
     let user = this.props.user;
     let active = this.props.active ? 'active' : '';
