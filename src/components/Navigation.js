@@ -46,10 +46,10 @@ export default class Navigation extends Component {
     // Changes the display of create folder
     let createFolder = "";
     if(!this.state.createActive) {
-      createFolder = (<div onClick={() => this.toggleCreateFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Create Folder</div>) ;
+      createFolder = (<div className='sidebar-link' onClick={() => this.toggleCreateFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Create Folder</div>) ;
     } else {
       createFolder = (
-      <div>
+      <div className='sidebar-link'>
         <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
         <img className="img-fluid" src="https://cdn0.iconfinder.com/data/icons/iconico-3/1024/63.png" alt="folder image"/>
         <div>Folder name: <Input /></div>
@@ -88,10 +88,7 @@ export default class Navigation extends Component {
                 <h2>Folders</h2>
                 <ul className='list-unstyled'>
                   <li className='sidebar-folder'>
-                    <div className='sidebar-link'>
-                      {/* <i className='fa fa-plus' aria-hidden='true'></i> Create Folder */}
-                      {createFolder}
-                    </div>
+                    {createFolder}
                   </li>
                 </ul>
               </div>
