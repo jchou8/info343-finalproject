@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 
 import './styles/Navigation.css';
 
@@ -29,6 +29,10 @@ export default class Navigation extends Component {
     });
   }
 
+  createFolder() {
+    return false;
+  }
+
 
   
   render() {
@@ -38,6 +42,22 @@ export default class Navigation extends Component {
 
     // a dummy div that will show up based on createActive
     let addFeature = (<div active={this.state.createActive}>input blah</div>)
+
+    // Changes the display of create folder
+    let createFolder = "";
+    if(!this.state.createActive) {
+      createFolder = (<div onClick={() => this.toggleCreateFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Create Folder</div>) ;
+    } else {
+      createFolder = (
+      <div>
+        <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
+        <img className="img-fluid" src="https://cdn0.iconfinder.com/data/icons/iconico-3/1024/63.png" alt="folder image"/>
+        <div>Folder name: <Input /></div>
+        {/* <div onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</div> */}
+        <Button color="primary" onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</Button>
+      </div>
+    ) ;
+    }
 
     return (
       <div id='sidebar' className={active}>
@@ -68,8 +88,9 @@ export default class Navigation extends Component {
                 <h2>Folders</h2>
                 <ul className='list-unstyled'>
                   <li className='sidebar-folder'>
-                    <div className='sidebar-link' onClick={() => this.toggleCreateFolder()}>
-                      <i className='fa fa-plus' aria-hidden='true'></i> Create Folder
+                    <div className='sidebar-link'>
+                      {/* <i className='fa fa-plus' aria-hidden='true'></i> Create Folder */}
+                      {createFolder}
                     </div>
                   </li>
                 </ul>
