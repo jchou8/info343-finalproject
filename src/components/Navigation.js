@@ -16,6 +16,7 @@ export default class Navigation extends Component {
 
 
   // testing for clicking the create folder button
+  // trying to make it toggle the section for creating folder
   toggleCreateFolder() {
     this.setState({createActive: !this.state.createActive});
     console.log('create folder status:'+this.state.createActive);
@@ -35,6 +36,7 @@ export default class Navigation extends Component {
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
 
+    // a dummy div that will show up based on createActive
     let addFeature = (<div active={this.state.createActive}>input blah</div>)
 
     return (
