@@ -6,11 +6,38 @@ import './styles/Navigation.css';
 
 // Pop-out sidebar menu, with header, current user, and folder list
 export default class Navigation extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      createActive: false
+    }
+  }
 
+
+
+  // testing for clicking the create folder button
+  // trying to make it toggle the section for creating folder
+  toggleCreateFolder() {
+    this.setState({createActive: !this.state.createActive});
+    console.log('create folder status:'+this.state.createActive);
+  }
+
+
+  closeCreateFolder() {
+    this.setState({
+      createActive: false
+    });
+  }
+
+
+  
   render() {
     let user = this.props.user;
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
+
+    // a dummy div that will show up based on createActive
+    let addFeature = (<div active={this.state.createActive}>input blah</div>)
 
     return (
       <div id='sidebar' className={active}>
@@ -41,7 +68,7 @@ export default class Navigation extends Component {
                 <h2>Folders</h2>
                 <ul className='list-unstyled'>
                   <li className='sidebar-folder'>
-                    <div className='sidebar-link' onClick={this.props.closeCallback}>
+                    <div className='sidebar-link' onClick={() => this.toggleCreateFolder()}>
                       <i className='fa fa-plus' aria-hidden='true'></i> Create Folder
                     </div>
                   </li>
