@@ -30,11 +30,27 @@ export default class Folder extends Component {
         };
     }
 
-    componentDidMount() {
-        this.linksRef = firebase.database().ref('folders/' + this.props.match.params.folderID);
+    // Add reference to the current folder's links
+    addDBRef(folderID) {
+        this.linksRef = firebase.database().ref('folders/' + folderID);
         this.linksRef.on('value', (snapshot) => {
             this.setState({ folder: snapshot.val(), loading: false });
         });
+    }
+
+    componentDidMount() {
+        // Add reference to current folder
+        this.addDBRef(this.props.match.params.folderID);
+    }
+
+    // Update ref when folder changes
+    componentWillReceiveProps(nextProps) {
+        let folderID = nextProps.match.params.folderID;
+        this.setState({ loading: true });
+
+        // Remove previous references and add references to new folder
+        this.linksRef.off();
+        this.addDBRef(folderID);
     }
 
     componentWillUnmount() {
