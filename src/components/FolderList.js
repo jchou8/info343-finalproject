@@ -26,7 +26,7 @@ export default class Navigation extends Component {
     }
 
     componentWillUnmount() {
-      this.foldersRef.off();
+        this.foldersRef.off();
     }
 
     // testing for clicking the create folder button
@@ -48,7 +48,9 @@ export default class Navigation extends Component {
         let folder = {
             name: this.state.folderName,
             owner: this.props.user.displayName,
-            public: false
+            ownerID: this.props.user.uid,
+            public: false,
+            users: {}
         }
 
         firebase.database().ref('folders').push(folder)
@@ -73,13 +75,16 @@ export default class Navigation extends Component {
         // Build list of links to channels
         let folderList = folderIDs.map((id) => {
             let folder = folders[id];
-            return (
-                <li key={id} className='sidebar-folder'>
-                    <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
-                        <div><i className='fa fa-folder' aria-hidden='true'></i>{' ' + folder.name}</div>
-                    </NavLink>
-                </li>
-            );
+
+            if (user.uid === folder.ownerID || folder.users.hasOwnProperty(user.uid)) {
+                return (
+                    <li key={id} className='sidebar-folder'>
+                        <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
+                            <div><i className='fa fa-folder' aria-hidden='true'></i>{' ' + folder.name}</div>
+                        </NavLink>
+                    </li>
+                );
+            }
         });
 
         // Changes the display of create folder
