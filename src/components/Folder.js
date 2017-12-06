@@ -17,7 +17,11 @@ export default class Folder extends Component {
     updateSearchVal(event) {
         this.setState({searchValue: event.target.value});
         console.log(this.state.searchValue);
-        console.log(firebase.database().ref('folders/' + this.props.match.params.folderID))
+        this.curFolder = firebase.database().ref('folders/' + this.props.match.params.folderID);
+        // Checks that we're in the right folder (to be modified once bookmarks can be added)
+        this.curFolder.on('value', (snapshot) => {
+            console.log(snapshot.val());
+          });
     }
 
     render() {
