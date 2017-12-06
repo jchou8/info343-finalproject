@@ -10,7 +10,8 @@ export default class Folder extends Component {
     constructor(props){
         super(props);
         this.state = {
-          searchValue: null
+          searchValue: null,
+          links: null
         };
     }
 
@@ -21,6 +22,7 @@ export default class Folder extends Component {
         // Checks that we're in the right folder (to be modified once bookmarks can be added)
         this.curFolder.on('value', (snapshot) => {
             console.log(snapshot.val());
+            this.setState({links: snapshot.val()});
           });
     }
 
@@ -28,9 +30,14 @@ export default class Folder extends Component {
         return (
             <div>
                 <FolderHeader/>
-                <InputGroup>
-                <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
-                </InputGroup>
+                <div className='row'>
+                    <div className="col-sm-4"></div>
+                    <div className='col-sm-4'>
+                        <InputGroup>
+                            <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
+                        </InputGroup>
+                    </div>
+                </div>
                 <LinkList folderID={this.props.match.params.folderID} />
             </div>
         );
