@@ -117,8 +117,8 @@ export default class Navigation extends Component {
                 <ul className='list-unstyled'>
                     <li className='sidebar-folder'>
                         {createFolder}
-                        {folderList}
                     </li>
+                    {folderList}
                 </ul>
             </div>
         );

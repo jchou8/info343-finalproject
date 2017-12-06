@@ -9,7 +9,8 @@ import Spinner from 'react-spinkit';
 import Navigation from './components/Navigation';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
-import LinkList from './components/LinkList';
+import HomePage from './components/HomePage';
+import Folder from './components/Folder.js';
 
 import './App.css';
 
@@ -103,7 +104,10 @@ class App extends Component {
 
   render() {
     // Functions for router to render components and pass in necessary props
-    let renderLinkList = (props) => <LinkList {...props}
+    let renderFolder = (props) => <Folder {...props}
+      user={this.state.user}
+    />;
+    let renderHomePage = (props) => <HomePage {...props}
       user={this.state.user}
     />;
     let renderLogin = (props) => <LoginPage {...props}
@@ -133,10 +137,10 @@ class App extends Component {
                 {this.state.loading && <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />}
 
                 <Switch>
-                  <Route exact path='/' render={renderLinkList} />
+                  <Route exact path='/' render={renderHomePage} />
                   <Route path='/register' render={renderRegister} />
                   <Route path='/login' render={renderLogin} />
-                  <Route path='/bookmarks/:convoName' render={renderLinkList} />
+                  <Route path='/bookmarks/:folderID' render={renderFolder} />
                 </Switch>
               </main>
             </div>
