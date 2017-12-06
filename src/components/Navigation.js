@@ -1,95 +1,17 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Button, Input } from 'reactstrap';
-import firebase from 'firebase/app';
+import { Link } from 'react-router-dom';
+import { Button } from 'reactstrap';
 
 import './styles/Navigation.css';
 
+import FolderList from './FolderList';
+
 // Pop-out sidebar menu, with header, current user, and folder list
 export default class Navigation extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      createActive: false,
-      folderName: '',
-      showFolders: false
-    }
-  }
-
-
-
-  // testing for clicking the create folder button
-  // trying to make it toggle the section for creating folder
-  toggleCreateFolder() {
-    this.setState({createActive: !this.state.createActive});
-  }
-
-
-  closeCreateFolder() {
-    this.setState({
-      createActive: false
-    });
-  }
-
-  createFolder(event) {
-    event.preventDefault(); // don't submit
-    
-      // null folder be pushed inside an empty folders root
-      let folder = {
-        owner: this.props.user.displayName
-      }
-  
-      firebase.database().ref('folders').child(this.state.folderName).push(folder)
-      .catch((err) => this.setState({errorMessage: err.message}));
-  
-      this.setState({folderName:''});
-  }
-
-
-  updateFolderName(event) {
-    this.setState({folderName: event.target.value});
-  }
-
-  toggleFolderList(event) {
-    this.setState({showFolders: !this.state.showFolders});
-  }
-
-  
   render() {
     let user = this.props.user;
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
-
-    let placeHolderFolder = "";
-    if(this.state.showFolders) {
-      placeHolderFolder = "Dummy Folder Text";
-    } else {
-      placeHolderFolder = "";
-    }
-
-    // Changes the display of create folder
-    let createFolder = "";
-    if(!this.state.createActive) {
-      createFolder = (<div className='sidebar-link' onClick={() => this.toggleCreateFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Create Folder</div>) ;
-    } else {
-      createFolder = (
-      <div className='sidebar-link'>
-        <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
-        <img className="img-fluid" src="https://cdn0.iconfinder.com/data/icons/iconico-3/1024/63.png" alt="folder image"/>
-        <div>Folder name: <Input 
-                            name="text" 
-                            value={this.state.folderName}
-                            onChange={(e) => this.updateFolderName(e)}
-                            placeholder='enter folder name...'/>
-        </div>
-        {/* <div onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</div> */}
-        <Button 
-        color="primary" 
-        disabled={this.state.folderName.length === 0}
-        onClick={(e) => this.createFolder(e)}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</Button>
-      </div>
-    ) ;
-    }
 
     return (
       <div id='sidebar' className={active}>
@@ -116,15 +38,10 @@ export default class Navigation extends Component {
                 </div>
               </div>
 
-              <div>
-                <h2 onClick={((e) => this.toggleFolderList(e))}>Folders</h2>
-                <ul className='list-unstyled'>
-                  <li className='sidebar-folder'>
-                    {createFolder}
-                    {placeHolderFolder}
-                  </li>
-                </ul>
-              </div>
+              <FolderList
+                closeCallback={this.props.closeCallback}
+                user={this.props.user}
+              />
 
               <Link to='/login'>
                 <Button color='secondary' onClick={this.props.signOutCallback}>
