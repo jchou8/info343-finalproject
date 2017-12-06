@@ -76,6 +76,7 @@ export default class Navigation extends Component {
         let folderList = folderIDs.map((id) => {
             let folder = folders[id];
             if (user.uid === folder.ownerID || (folder.users && folder.users.hasOwnProperty(user.uid))) {
+
                 return (
                     <li key={id} className='sidebar-folder'>
                         <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>

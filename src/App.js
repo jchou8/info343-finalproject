@@ -84,8 +84,14 @@ class App extends Component {
         this.setState({ error: error.message });
       })
       .then(() => {
+        let userObj = {
+          userName: this.state.user.displayName,
+          userId: this.state.user.uid
+        }
+        firebase.database().ref('userPermissions/').push(userObj);
         this.setState({ loading: false });
       });
+
   }
 
   // Sign out
