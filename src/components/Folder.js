@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Button, Input, InputGroup } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
 import firebase from 'firebase/app';
@@ -22,7 +22,11 @@ export default class Folder extends Component {
             shareModal: false,
             deleteModal: false,
             editModal: false,
-            loading: true
+            loading: true,
+
+            // Search bar
+            searchValue: null,
+            links: null
         };
     }
 
@@ -49,6 +53,17 @@ export default class Folder extends Component {
         this.setState({ editModal: !this.state.editModal });
     }
 
+    updateSearchVal(event) {
+        this.setState({ searchValue: event.target.value });
+        console.log(this.state.searchValue);
+        this.curFolder = firebase.database().ref('folders/' + this.props.match.params.folderID);
+        // Checks that we're in the right folder (to be modified once bookmarks can be added)
+        this.curFolder.on('value', (snapshot) => {
+            console.log(snapshot.val());
+            this.setState({ links: snapshot.val() });
+        });
+    }
+
     render() {
         let content = null;
         if (this.state.loading) {
@@ -60,6 +75,15 @@ export default class Folder extends Component {
                     toggleEditModal={() => this.toggleEditModal()}
                     toggleDeleteModal={() => this.toggleDeleteModal()}
                 />
+
+                <div className='row'>
+                    <div className="col-sm-4"></div>
+                    <div className='col-sm-4'>
+                        <InputGroup>
+                            <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
+                        </InputGroup>
+                    </div>
+                </div>
 
                 <LinkList folderID={this.props.match.params.folderID} />
 
@@ -87,10 +111,11 @@ export default class Folder extends Component {
 
         return (
             <div>
-                {this.props.user &&
+                {
+                    this.props.user &&
                     content
                 }
-            </div>
+            </div >
         );
     }
 }

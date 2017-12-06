@@ -5,7 +5,7 @@ import { Input, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'react
 export default class EditFolderModal extends Component {
     constructor(props) {
         super(props);
-        this.state = ({ value: this.props.folderName || '' });
+        this.state = ({ value: this.props.folderName });
     }
 
     // Update state to reflect text box
