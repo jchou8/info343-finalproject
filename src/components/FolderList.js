@@ -75,7 +75,7 @@ export default class Navigation extends Component {
             let folder = folders[id];
             return (
                 <li key={id} className='sidebar-folder'>
-                    <NavLink to={'/bookmarks/' + folder.name} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
+                    <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
                         <div><i className='fa fa-folder' aria-hidden='true'></i>{' ' + folder.name}</div>
                     </NavLink>
                 </li>
