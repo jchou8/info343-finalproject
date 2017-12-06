@@ -8,9 +8,9 @@ export default class LinkList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      BookmarkList: [],
-      shared: false
+      bookmarkList: []
     };
+<<<<<<< HEAD
     this.state.BookmarkList = firebase.database().ref('folders/' + this.props.folderName +"/links");
   }
 
@@ -37,13 +37,42 @@ export default class LinkList extends Component {
 
             content.push(<li><Bookmark bookmark={this.state.bookmarkList[i]} handleDelete={this.handleDelete.bind(this)}/></li>);
             {/*passes in one prop that is a Bookmark object*/}
+=======
+  }
+
+  componentDidMount() {
+    this.linksRef = firebase.database().ref('folders/' + this.props.folderID + '/links');
+    this.linksRef.on('value', (snapshot) => {
+      this.setState({ bookmarkList: snapshot.val() });
+    });
+  }
+
+  componentWillUnmount() {
+    this.linksRef.off();
+  }
+
+  render() {
+    let bookmarks = null;
+    
+    // Create list of messages to display
+    if (this.state.bookmarkList) {
+        let bookmarkIDs = Object.keys(this.state.bookmarkList);
+        bookmarks = bookmarkIDs.map((id) => {
+            let bookmark = this.state.bookmarkList[id];
+            return (<Bookmark
+                key={id}
+                bookmark={bookmark}
+            />);
+        });
+    }
+>>>>>>> 13c6d1395b1fffd81e8f6a8175e2548065efdaae
 
     }
     return (
       <div>
-        <ol>
-          {content}
-        </ol>
+        <ul>
+          {bookmarks}
+        </ul>
       </div>
     );
   }
