@@ -13,10 +13,11 @@ export default class LinkList extends Component {
   }
 
   componentDidMount() {
-    this.linksRef = firebase.database().ref('folders/' + this.props.folderID + '/links');
+    this.linksRef = firebase.database().ref('folders/' + /*this.props.folderID*/'-L-hGY2pijAanjIISpp6' + '/links');
     this.linksRef.on('value', (snapshot) => {
       this.setState({ bookmarkList: snapshot.val() });
     });
+    console.log(this.state);
   }
 
   componentWillUnmount() {
@@ -25,7 +26,7 @@ export default class LinkList extends Component {
 
   render() {
     let bookmarks = null;
-    
+
     // Create list of messages to display
     if (this.state.bookmarkList) {
         let bookmarkIDs = Object.keys(this.state.bookmarkList);
@@ -37,8 +38,7 @@ export default class LinkList extends Component {
             />);
         });
     }
-
-    return (
+  return (
       <div>
         <ul>
           {bookmarks}
