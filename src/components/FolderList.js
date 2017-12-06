@@ -66,6 +66,7 @@ export default class Navigation extends Component {
     }
 
     render() {
+        let user = this.props.user;
         let folders = this.state.folders;
         let folderIDs = [];
         if (folders) {
@@ -75,8 +76,7 @@ export default class Navigation extends Component {
         // Build list of links to channels
         let folderList = folderIDs.map((id) => {
             let folder = folders[id];
-
-            if (user.uid === folder.ownerID || folder.users.hasOwnProperty(user.uid)) {
+            if (user.uid === folder.ownerID || (folder.users && folder.users.hasOwnProperty(user.uid))) {
                 return (
                     <li key={id} className='sidebar-folder'>
                         <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
