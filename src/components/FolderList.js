@@ -16,7 +16,6 @@ export default class Navigation extends Component {
         }
     }
 
-
     componentDidMount() {
         // Get list of folders from db
         this.foldersRef = firebase.database().ref('folders');

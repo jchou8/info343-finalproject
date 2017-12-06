@@ -10,7 +10,7 @@ export default class Folder extends Component {
         return (
             <div>
                 <FolderHeader/>
-                <LinkList/>
+                <LinkList folderID={this.props.match.params.folderID} />
             </div>
         );
     }
