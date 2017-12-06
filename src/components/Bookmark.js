@@ -6,24 +6,20 @@ export default class Bookmark extends Component {
   //takes in BookMarkList prop
   constructor(props){
     super(props);
-    this.state = {
-      url:'',
-      name:'',
-      time:'',
-    };
   }
 
   render() {
-    let date = this.props.date;
+    let date = this.props.bookmark.Date;
     date = new Date( date );
+    //todo: needs a handleDelete() callback to linkedlist on the FA icon
     return (
       <div>
       <Row>
-         <Col>this.props.name</Col>
-         <Col><a href={this.props.URL}>{this.props.URL}</a></Col>
+         <Col>this.props.bookmark.Name</Col>
+         <Col><a href={this.props.bookmark.URL}>{this.props.bookmark.URL}</a></Col>
          <Col>{date}</Col>
       </Row>
-      <i class="fa fa-trash-o" onClick={this.props.handleDelete}></i>
+        <i class="fa fa-trash-o"></i>
       </div>
     );
   }

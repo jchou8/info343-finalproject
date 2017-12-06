@@ -27,7 +27,7 @@ export default class Folder extends Component {
                 <InputGroup>
                 <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
                 </InputGroup>
-                <LinkList folderID={this.props.match.params.folderID} />
+                <LinkList folderID={/*this.props.match.params.folderID*/ '-L-hGY2pijAanjIISpp6'} />
             </div>
         );
     }
