@@ -35,7 +35,7 @@ export default class Navigation extends Component {
     
       // null folder be pushed inside an empty folders root
       let folder = {
-        name: ''
+        owner: this.props.user.displayName
       }
   
       firebase.database().ref('folders').child(this.state.folderName).push(folder)
@@ -55,7 +55,7 @@ export default class Navigation extends Component {
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
 
-
+  
     // Changes the display of create folder
     let createFolder = "";
     if(!this.state.createActive) {
