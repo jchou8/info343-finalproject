@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
+import firebase from 'firebase/app';
 
 import './styles/Navigation.css';
 
@@ -9,7 +10,8 @@ export default class Navigation extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      createActive: false
+      createActive: false,
+      folderName: ''
     }
   }
 
@@ -19,7 +21,6 @@ export default class Navigation extends Component {
   // trying to make it toggle the section for creating folder
   toggleCreateFolder() {
     this.setState({createActive: !this.state.createActive});
-    console.log('create folder status:'+this.state.createActive);
   }
 
 
@@ -29,10 +30,24 @@ export default class Navigation extends Component {
     });
   }
 
-  createFolder() {
-    return false;
+  createFolder(event) {
+    event.preventDefault(); // don't submit
+    
+      // null folder be pushed inside an empty folders root
+      let folder = {
+        name: ''
+      }
+  
+      firebase.database().ref('folders').child(this.state.folderName).push(folder)
+      .catch((err) => this.setState({errorMessage: err.message}));
+  
+      this.setState({folderName:''});
   }
 
+
+  updateFolderName(event) {
+    this.setState({folderName: event.target.value});
+  }
 
   
   render() {
@@ -40,8 +55,6 @@ export default class Navigation extends Component {
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
 
-    // a dummy div that will show up based on createActive
-    let addFeature = (<div active={this.state.createActive}>input blah</div>)
 
     // Changes the display of create folder
     let createFolder = "";
@@ -52,9 +65,17 @@ export default class Navigation extends Component {
       <div className='sidebar-link'>
         <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
         <img className="img-fluid" src="https://cdn0.iconfinder.com/data/icons/iconico-3/1024/63.png" alt="folder image"/>
-        <div>Folder name: <Input /></div>
+        <div>Folder name: <Input 
+                            name="text" 
+                            value={this.state.folderName}
+                            onChange={(e) => this.updateFolderName(e)}
+                            placeholder='enter folder name...'/>
+        </div>
         {/* <div onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</div> */}
-        <Button color="primary" onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</Button>
+        <Button 
+        color="primary" 
+        disabled={this.state.folderName.length === 0}
+        onClick={(e) => this.createFolder(e)}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</Button>
       </div>
     ) ;
     }
