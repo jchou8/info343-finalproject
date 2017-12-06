@@ -11,7 +11,8 @@ export default class Navigation extends Component {
     super(props)
     this.state = {
       createActive: false,
-      folderName: ''
+      folderName: '',
+      showFolders: false
     }
   }
 
@@ -49,13 +50,23 @@ export default class Navigation extends Component {
     this.setState({folderName: event.target.value});
   }
 
+  toggleFolderList(event) {
+    this.setState({showFolders: !this.state.showFolders});
+  }
+
   
   render() {
     let user = this.props.user;
     let active = this.props.active ? 'active' : '';
     let chevDir = this.props.active ? 'left' : 'right';
 
-  
+    let placeHolderFolder = "";
+    if(this.state.showFolders) {
+      placeHolderFolder = "Dummy Folder Text";
+    } else {
+      placeHolderFolder = "";
+    }
+
     // Changes the display of create folder
     let createFolder = "";
     if(!this.state.createActive) {
@@ -106,10 +117,11 @@ export default class Navigation extends Component {
               </div>
 
               <div>
-                <h2>Folders</h2>
+                <h2 onClick={((e) => this.toggleFolderList(e))}>Folders</h2>
                 <ul className='list-unstyled'>
                   <li className='sidebar-folder'>
                     {createFolder}
+                    {placeHolderFolder}
                   </li>
                 </ul>
               </div>
