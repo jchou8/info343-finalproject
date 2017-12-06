@@ -13,26 +13,22 @@ export default class LinkList extends Component {
     };
     this.state.BookmarkList = firebase.database().ref('folders/' + this.props.folderName);
   }
+  
   render() {
-    if (!this.props.user) {
-      // Redirect the user if they're not logged in
-      return <Redirect to='/login' />;
-    } else {
-      let content = [];
-      for (var i = 0; i < this.state.BookmarkList.length; i++) {
-        <li>
-          content.push(<Bookmark bookmark={this.state.bookmarkList[i]} />);
+    let content = [];
+    for (var i = 0; i < this.state.BookmarkList.length; i++) {
+      <li>
+        content.push(<Bookmark bookmark={this.state.bookmarkList[i]} />);
             {/*passes in one prop that is a Bookmark object*/}
-        </li>
-      }
-
-      return (
-        <div>
-          <ol>
-            {content}
-          </ol>
-        </div>
-      );
+      </li>
     }
+
+    return (
+      <div>
+        <ol>
+          {content}
+        </ol>
+      </div>
+    );
   }
 }
