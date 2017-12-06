@@ -127,20 +127,11 @@ export default class Folder extends Component {
 
         return (
             <div>
-<<<<<<< HEAD
-                <FolderHeader/>
-                <InputGroup>
-                <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
-                </InputGroup>
-                <LinkList folderID={/*this.props.match.params.folderID*/ '-L-hGY2pijAanjIISpp6'} />
-            </div>
-=======
                 {
                     this.props.user &&
                     content
                 }
             </div >
->>>>>>> 5d30f00e80cbd1b19f538ffe518d143638427586
         );
     }
 }
