@@ -41,7 +41,7 @@ export default class EditFolderModal extends Component {
                 <ModalFooter>
                     <Button color="secondary" onClick={this.props.toggleCallback}>Cancel</Button>
                     <Button color="primary" onClick={(event) => this.handleEdit(event)}
-                        disabled={this.state.value.length === 0}
+                        disabled={this.state.value.length === 0 || this.state.value.length > 30}
                     >
                         <i className='fa fa-pencil' aria-hidden='true'></i> Confirm
                     </Button>
