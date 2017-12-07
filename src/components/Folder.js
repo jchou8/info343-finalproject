@@ -132,7 +132,7 @@ export default class Folder extends Component {
                     </div>
                 </div>
 
-                <LinkList links={this.state.folder.links} />
+                <LinkList folderID={this.state.folderID} links={this.state.folder.links} />
 
                 <ShareFolderModal
                     open={this.state.modal === 'share'}
