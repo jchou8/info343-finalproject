@@ -19,7 +19,7 @@ export default class Bookmark extends Component {
          <Col><a href={this.props.bookmark.URL}>{this.props.bookmark.URL}</a></Col>
          <Col><Time value={date} relative /></Col>
       </Row>
-        <i class="fa fa-trash-o"></i>
+        <i className="fa fa-trash-o" aria-label='Delete bookmark'></i>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button, Input, InputGroup } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
@@ -11,7 +11,6 @@ import ShareFolderModal from './ShareFolderModal';
 import DeleteModal from './DeleteModal';
 import EditFolderModal from './EditFolderModal';
 
-
 import './styles/Folder.css';
 
 export default class Folder extends Component {
@@ -19,9 +18,7 @@ export default class Folder extends Component {
         super(props);
         this.state = {
             folder: {},
-            shareModal: false,
-            deleteModal: false,
-            editModal: false,
+            modal: '',
             loading: true,
 
             // Search bar
@@ -57,16 +54,39 @@ export default class Folder extends Component {
         this.linksRef.off();
     }
 
-    toggleShareModal() {
-        this.setState({ shareModal: !this.state.shareModal });
+    toggleModal(modal) {
+        let newModal = this.state.modal === modal ? '' : modal;
+        console.log(newModal);
+        this.setState({ modal: newModal });
     }
 
-    toggleDeleteModal() {
-        this.setState({ deleteModal: !this.state.deleteModal });
+    deleteFolder() {
+        this.setState({ loading: true });
+
+        // Remove ref from database
+        this.linksRef.remove()
+            .catch((error) => {
+                console.log(error);
+                this.setState({ error: error.message });
+            })
+            .then(() => {
+                this.setState({ loading: false });
+            });
     }
 
-    toggleEditModal() {
-        this.setState({ editModal: !this.state.editModal });
+    editName(newName) {
+        this.setState({ loading: true });
+
+        this.linksRef.update({
+            name: newName
+        })
+            .catch((error) => {
+                console.log(error);
+                this.setState({ error: error.message });
+            })
+            .then(() => {
+                this.setState({ loading: false });
+            });
     }
 
     updateSearchVal(event) {
@@ -84,12 +104,14 @@ export default class Folder extends Component {
         let content = null;
         if (this.state.loading) {
             content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
+        } else if (!this.state.folder) {
+            content = <Redirect to='/'/>;
         } else {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
-                    toggleShareModal={() => this.toggleShareModal()}
-                    toggleEditModal={() => this.toggleEditModal()}
-                    toggleDeleteModal={() => this.toggleDeleteModal()}
+                    toggleShareModal={() => this.toggleModal('share')}
+                    toggleEditModal={() => this.toggleModal('edit')}
+                    toggleDeleteModal={() => this.toggleModal('delete')}
                 />
 
                 <div className='row'>
@@ -104,21 +126,21 @@ export default class Folder extends Component {
                 <LinkList links={this.state.folder.links} />
 
                 <ShareFolderModal
-                    open={this.state.shareModal}
+                    open={this.state.modal === 'share'}
                     messages={this.state.messages}
-                    toggleCallback={() => this.toggleShareModal()}
+                    toggleCallback={() => this.toggleModal('share')}
                 />
 
                 <DeleteModal
-                    open={this.state.deleteModal}
-                    toggleCallback={() => this.toggleDeleteModal()}
+                    open={this.state.modal === 'delete'}
+                    toggleCallback={() => this.toggleModal('delete')}
                     deleteCallback={() => this.deleteFolder()}
                     type='folder'
                 />
 
                 <EditFolderModal
-                    open={this.state.editModal}
-                    toggleCallback={() => this.toggleEditModal()}
+                    open={this.state.modal === 'edit'}
+                    toggleCallback={() => this.toggleModal('edit')}
                     editCallback={(newText) => this.editName(newText)}
                     folderName={this.state.folder.name}
                 />
