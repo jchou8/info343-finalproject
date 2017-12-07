@@ -18,6 +18,7 @@ export default class Folder extends Component {
         super(props);
         this.state = {
             folder: {},
+            folderID: '',
             modal: '',
             loading: true,
 
@@ -31,7 +32,7 @@ export default class Folder extends Component {
     addDBRef(folderID) {
         this.linksRef = firebase.database().ref('folders/' + folderID);
         this.linksRef.on('value', (snapshot) => {
-            this.setState({ folder: snapshot.val(), loading: false });
+            this.setState({ folder: snapshot.val(), folderID: folderID, loading: false });
         });
     }
 
@@ -56,7 +57,6 @@ export default class Folder extends Component {
 
     toggleModal(modal) {
         let newModal = this.state.modal === modal ? '' : modal;
-        console.log(newModal);
         this.setState({ modal: newModal });
     }
 
@@ -74,8 +74,14 @@ export default class Folder extends Component {
             });
     }
 
+    togglePublic() {
+        this.linksRef.update({
+            public: !this.state.folder.public
+        });
+    }
+
     editName(newName) {
-        if (newName != this.state.folder.name) {
+        if (newName !== this.state.folder.name) {
             this.setState({ loading: true });
 
             this.linksRef.update({
@@ -132,6 +138,9 @@ export default class Folder extends Component {
                     open={this.state.modal === 'share'}
                     messages={this.state.messages}
                     toggleCallback={() => this.toggleModal('share')}
+                    togglePublicCallback={() => this.togglePublic()}
+                    folder={this.state.folder}
+                    folderID={this.state.folderID}
                 />
 
                 <DeleteModal
@@ -139,6 +148,7 @@ export default class Folder extends Component {
                     toggleCallback={() => this.toggleModal('delete')}
                     deleteCallback={() => this.deleteFolder()}
                     type='folder'
+                    name={this.state.folder.name}
                 />
 
                 <EditFolderModal
@@ -153,7 +163,7 @@ export default class Folder extends Component {
         return (
             <div>
                 {
-                    this.props.user &&
+                    (this.props.user || (this.state.folder && this.state.folder.public)) &&
                     content
                 }
             </div >

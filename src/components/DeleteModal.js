@@ -14,7 +14,7 @@ export default class DeleteModal extends Component {
         return (
             <Modal isOpen={this.props.open} toggle={this.props.toggleCallback}>
                 <ModalHeader toggle={this.props.toggleCallback}>
-                    Are you sure you want to delete this {this.props.type}?
+                    Are you sure you want to delete the {this.props.type + ' '} <strong>{this.props.name}</strong>?
                 </ModalHeader>
                 {this.props.whatToRender &&
                     <ModalBody>
