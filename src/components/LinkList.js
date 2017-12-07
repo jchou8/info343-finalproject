@@ -97,12 +97,12 @@ export default class LinkList extends Component {
 
 
     let bookmarks = null;
-    
+
     // Create list of messages to display
-    if (this.state.bookmarkList) {
-        let bookmarkIDs = Object.keys(this.state.bookmarkList);
+    if (this.props.links) {
+        let bookmarkIDs = Object.keys(this.props.links);
         bookmarks = bookmarkIDs.map((id) => {
-            let bookmark = this.state.bookmarkList[id];
+            let bookmark = this.props.links[id];
             return (<Bookmark
                 key={id}
                 bookmark={bookmark}

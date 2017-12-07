@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
 import firebase from 'firebase/app';
 
 import './styles/Navigation.css';
 
 // Pop-out sidebar menu, with header, current user, and folder list
-export default class Navigation extends Component {
+class Navigation extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -52,8 +52,10 @@ export default class Navigation extends Component {
             users: {}
         }
 
-        firebase.database().ref('folders').push(folder)
-            .catch((err) => this.setState({ errorMessage: err.message }));
+        let key = firebase.database().ref('folders').push(folder).key;
+        this.props.history.push('/bookmarks/' + key);
+
+        firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + key).set('owner');
 
         this.setState({ folderName: '' });
         this.closeCreateFolder();
@@ -76,6 +78,7 @@ export default class Navigation extends Component {
         let folderList = folderIDs.map((id) => {
             let folder = folders[id];
             if (user.uid === folder.ownerID || (folder.users && folder.users.hasOwnProperty(user.uid))) {
+
                 return (
                     <li key={id} className='sidebar-folder'>
                         <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
@@ -123,3 +126,5 @@ export default class Navigation extends Component {
         );
     }
 }
+
+export default withRouter(Navigation);

@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 //import { Container, Row, Col } from 'reactstrap';
 
 export default class Bookmark extends Component {
+  //takes in BookMarkList prop
+  constructor(props){
+    super(props);
+  }
+
   render() {
+    let date = this.props.bookmark.Date;
+    //todo: needs a handleDelete() callback to linkedlist on the FA icon
     return (
      
         <tr>
