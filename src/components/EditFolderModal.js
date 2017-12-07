@@ -8,6 +8,11 @@ export default class EditFolderModal extends Component {
         this.state = ({ value: this.props.folderName });
     }
 
+    // Update initial name when folder changes
+    componentWillReceiveProps(nextProps) {
+        this.setState({ value: nextProps.folderName });
+    }
+
     // Update state to reflect text box
     handleChange(event) {
         this.setState({ value: event.target.value });
@@ -32,11 +37,11 @@ export default class EditFolderModal extends Component {
                         onChange={(e) => this.handleChange(e)}
                     />
                 </ModalBody>
-                
+
                 <ModalFooter>
                     <Button color="secondary" onClick={this.props.toggleCallback}>Cancel</Button>
                     <Button color="primary" onClick={(event) => this.handleEdit(event)}
-                        disabled={this.state.value.length === 0}
+                        disabled={this.state.value.length === 0 || this.state.value.length > 30}
                     >
                         <i className='fa fa-pencil' aria-hidden='true'></i> Confirm
                     </Button>

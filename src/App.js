@@ -85,10 +85,9 @@ class App extends Component {
       })
       .then(() => {
         let userObj = {
-          userName: this.state.user.displayName,
-          userId: this.state.user.uid
+          userName: this.state.user.displayName
         }
-        firebase.database().ref('userPermissions/').push(userObj);
+        firebase.database().ref('userPermissions/' + this.state.user.uid).set(userObj);
         this.setState({ loading: false });
       });
 

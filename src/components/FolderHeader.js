@@ -4,6 +4,7 @@ import { Button } from 'reactstrap';
 export default class FolderHeader extends Component {
     render() {
         let folder = this.props.folder;
+        let isOwner = this.props.user && (folder.ownerID === this.props.user.uid);
 
         return (
             <div className='folder-header'>
@@ -11,7 +12,7 @@ export default class FolderHeader extends Component {
                     {folder.name}
                 </h2>
 
-                <div className='header-buttons text-right'>
+                {isOwner && <div className='header-buttons text-right'>
                     <Button color='primary' outline title='Share folder'><i className='fa fa-link' aria-label='Share folder'
                         onClick={this.props.toggleShareModal}
                     ></i></Button>
@@ -24,6 +25,7 @@ export default class FolderHeader extends Component {
                         onClick={this.props.toggleDeleteModal}
                     ></i></Button>
                 </div>
+                }
             </div>
         );
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Input, InputGroup } from 'reactstrap';
+import { Link, Redirect } from 'react-router-dom';
+import { Alert, Button, Input, InputGroup } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
 import firebase from 'firebase/app';
@@ -11,7 +11,6 @@ import ShareFolderModal from './ShareFolderModal';
 import DeleteModal from './DeleteModal';
 import EditFolderModal from './EditFolderModal';
 
-
 import './styles/Folder.css';
 
 export default class Folder extends Component {
@@ -19,9 +18,8 @@ export default class Folder extends Component {
         super(props);
         this.state = {
             folder: {},
-            shareModal: false,
-            deleteModal: false,
-            editModal: false,
+            folderID: '',
+            modal: '',
             loading: true,
 
             // Search bar
@@ -34,7 +32,7 @@ export default class Folder extends Component {
     addDBRef(folderID) {
         this.linksRef = firebase.database().ref('folders/' + folderID);
         this.linksRef.on('value', (snapshot) => {
-            this.setState({ folder: snapshot.val(), loading: false });
+            this.setState({ folder: snapshot.val(), folderID: folderID, loading: false });
         });
     }
 
@@ -57,16 +55,46 @@ export default class Folder extends Component {
         this.linksRef.off();
     }
 
-    toggleShareModal() {
-        this.setState({ shareModal: !this.state.shareModal });
+    toggleModal(modal) {
+        let newModal = this.state.modal === modal ? '' : modal;
+        this.setState({ modal: newModal });
     }
 
-    toggleDeleteModal() {
-        this.setState({ deleteModal: !this.state.deleteModal });
+    deleteFolder() {
+        this.setState({ loading: true });
+
+        // Remove ref from database
+        this.linksRef.remove()
+            .catch((error) => {
+                console.log(error);
+                this.setState({ error: error.message });
+            })
+            .then(() => {
+                this.setState({ loading: false });
+            });
     }
 
-    toggleEditModal() {
-        this.setState({ editModal: !this.state.editModal });
+    togglePublic() {
+        this.linksRef.update({
+            public: !this.state.folder.public
+        });
+    }
+
+    editName(newName) {
+        if (newName !== this.state.folder.name) {
+            this.setState({ loading: true });
+
+            this.linksRef.update({
+                name: newName
+            })
+                .catch((error) => {
+                    console.log(error);
+                    this.setState({ error: error.message });
+                })
+                .then(() => {
+                    this.setState({ loading: false });
+                });
+        }
     }
 
     updateSearchVal(event) {
@@ -83,13 +111,16 @@ export default class Folder extends Component {
     render() {
         let content = null;
         if (this.state.loading) {
-        content = (<div><Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' /></div> );
-        } else {
+            content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
+        } else if (!this.state.folder) {
+            content = <Redirect to='/' />;
+        } else if (this.props.user || (this.state.folder && this.state.folder.public)) {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
-                    toggleShareModal={() => this.toggleShareModal()}
-                    toggleEditModal={() => this.toggleEditModal()}
-                    toggleDeleteModal={() => this.toggleDeleteModal()}
+                    toggleShareModal={() => this.toggleModal('share')}
+                    toggleEditModal={() => this.toggleModal('edit')}
+                    toggleDeleteModal={() => this.toggleModal('delete')}
+                    user={this.props.user}
                 />
 
                 <div className='row'>
@@ -101,36 +132,36 @@ export default class Folder extends Component {
                     </div>
                 </div>
 
-                <LinkList folderID={this.props.match.params.folderID} />
+                <LinkList links={this.state.folder.links} />
 
                 <ShareFolderModal
-                    open={this.state.shareModal}
+                    open={this.state.modal === 'share'}
                     messages={this.state.messages}
-                    toggleCallback={() => this.toggleShareModal()}
+                    toggleCallback={() => this.toggleModal('share')}
+                    togglePublicCallback={() => this.togglePublic()}
+                    folder={this.state.folder}
+                    folderID={this.state.folderID}
                 />
 
                 <DeleteModal
-                    open={this.state.deleteModal}
-                    toggleCallback={() => this.toggleDeleteModal()}
+                    open={this.state.modal === 'delete'}
+                    toggleCallback={() => this.toggleModal('delete')}
                     deleteCallback={() => this.deleteFolder()}
                     type='folder'
+                    name={this.state.folder.name}
                 />
 
                 <EditFolderModal
-                    open={this.state.editModal}
-                    toggleCallback={() => this.toggleEditModal()}
+                    open={this.state.modal === 'edit'}
+                    toggleCallback={() => this.toggleModal('edit')}
                     editCallback={(newText) => this.editName(newText)}
                     folderName={this.state.folder.name}
                 />
             </div>);
+        } else {
+            return <Alert color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
         }
 
-        return (
-            <div>
-                {// this.props.user &&
-                    content
-                }
-            </div >
-        );
+        return content;
     }
 }
