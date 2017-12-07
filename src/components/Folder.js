@@ -75,18 +75,20 @@ export default class Folder extends Component {
     }
 
     editName(newName) {
-        this.setState({ loading: true });
+        if (newName != this.state.folder.name) {
+            this.setState({ loading: true });
 
-        this.linksRef.update({
-            name: newName
-        })
-            .catch((error) => {
-                console.log(error);
-                this.setState({ error: error.message });
+            this.linksRef.update({
+                name: newName
             })
-            .then(() => {
-                this.setState({ loading: false });
-            });
+                .catch((error) => {
+                    console.log(error);
+                    this.setState({ error: error.message });
+                })
+                .then(() => {
+                    this.setState({ loading: false });
+                });
+        }
     }
 
     updateSearchVal(event) {
@@ -105,13 +107,14 @@ export default class Folder extends Component {
         if (this.state.loading) {
             content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
         } else if (!this.state.folder) {
-            content = <Redirect to='/'/>;
+            content = <Redirect to='/' />;
         } else {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
                     toggleShareModal={() => this.toggleModal('share')}
                     toggleEditModal={() => this.toggleModal('edit')}
                     toggleDeleteModal={() => this.toggleModal('delete')}
+                    user={this.props.user}
                 />
 
                 <div className='row'>
