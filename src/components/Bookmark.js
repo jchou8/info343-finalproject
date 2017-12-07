@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import firebase from 'firebase/app';
-import { Container, Row, Col } from 'reactstrap';
-import Time from 'react-time';
+//import { Container, Row, Col } from 'reactstrap';
 
 export default class Bookmark extends Component {
   //takes in BookMarkList prop
@@ -13,14 +11,14 @@ export default class Bookmark extends Component {
     let date = this.props.bookmark.Date;
     //todo: needs a handleDelete() callback to linkedlist on the FA icon
     return (
-      <div>
-      <Row>
-         <Col>{this.props.bookmark.Name}</Col>
-         <Col><a href={this.props.bookmark.URL}>{this.props.bookmark.URL}</a></Col>
-         <Col><Time value={date} relative /></Col>
-      </Row>
-        <i className="fa fa-trash-o" aria-label='Delete bookmark'></i>
-      </div>
+     
+        <tr>
+          <td>{this.props.bookmark.Date}</td>
+          <td><a href={this.props.bookmark.URL} target="_blank">{this.props.bookmark.Name}</a></td>
+          <td>{this.props.bookmark.URL}</td>
+          <td><i className="fa fa-trash-o"></i></td>
+        </tr>
+      
     );
   }
 }
