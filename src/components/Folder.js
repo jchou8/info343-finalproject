@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Button, Input, InputGroup } from 'reactstrap';
+import { Alert, Button, Input, InputGroup } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
 import firebase from 'firebase/app';
@@ -114,7 +114,7 @@ export default class Folder extends Component {
             content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
         } else if (!this.state.folder) {
             content = <Redirect to='/' />;
-        } else {
+        } else if (this.props.user || (this.state.folder && this.state.folder.public)) {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
                     toggleShareModal={() => this.toggleModal('share')}
@@ -158,15 +158,10 @@ export default class Folder extends Component {
                     folderName={this.state.folder.name}
                 />
             </div>);
+        } else {
+            return <Alert color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
         }
 
-        return (
-            <div>
-                {
-                    (this.props.user || (this.state.folder && this.state.folder.public)) &&
-                    content
-                }
-            </div >
-        );
+        return content;
     }
 }
