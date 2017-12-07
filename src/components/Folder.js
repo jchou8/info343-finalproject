@@ -83,7 +83,7 @@ export default class Folder extends Component {
     render() {
         let content = null;
         if (this.state.loading) {
-            content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
+        content = (<div><Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' /></div> );
         } else {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
@@ -127,8 +127,7 @@ export default class Folder extends Component {
 
         return (
             <div>
-                {
-                    this.props.user &&
+                {// this.props.user &&
                     content
                 }
             </div >
