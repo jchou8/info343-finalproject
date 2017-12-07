@@ -55,6 +55,8 @@ class Navigation extends Component {
         let key = firebase.database().ref('folders').push(folder).key;
         this.props.history.push('/bookmarks/' + key);
 
+        firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + key).set('owner');
+
         this.setState({ folderName: '' });
         this.closeCreateFolder();
     }
