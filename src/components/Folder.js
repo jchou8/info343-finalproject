@@ -19,7 +19,7 @@ export default class Folder extends Component {
         this.state = {
             folder: {},
             folderID: '',
-            modal: 'share',
+            modal: '',
             loading: true,
 
             shareError: ''
