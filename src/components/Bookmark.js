@@ -7,7 +7,10 @@ export default class Bookmark extends Component {
     let bookmark = this.props.bookmark;
     return (
       <tr>
-        <td className='bookmark-name'><a href={bookmark.URL} target="_blank">{bookmark.Name}</a></td>
+        <td className='bookmark-name text-left'><a href={bookmark.URL} target="_blank">
+          <img src={'https://www.google.com/s2/favicons?domain=' + bookmark.URL} />
+          {' ' + bookmark.Name}</a>
+        </td>
         <td className='text-left'><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
         <td><Time value={bookmark.Date} relative /></td>
         {this.props.canEdit && <td>
