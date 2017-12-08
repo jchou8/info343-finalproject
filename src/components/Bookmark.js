@@ -6,14 +6,14 @@ export default class Bookmark extends Component {
   render() {
     let bookmark = this.props.bookmark;
     return (
-      <tr>
-        <td className='bookmark-name text-left'><a href={bookmark.URL} target="_blank">
+      <tr className='row'>
+        <td className='bookmark-name text-left col-xs-12 col-sm-6 col-md-3 col-Name'><a href={bookmark.URL} target="_blank">
           <img src={'https://www.google.com/s2/favicons?domain=' + bookmark.URL} />
           {' ' + bookmark.Name}</a>
         </td>
-        <td className='text-left'><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
-        <td><Time value={bookmark.Date} relative /></td>
-        {this.props.canEdit && <td>
+        <td className='text-left col-xs-12 col-sm-6 col-md-3 col-URL'><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
+        <td className='col-xs-6 col-sm-6 col-md-3 col-Added'><Time value={bookmark.Date} relative /></td>
+        {this.props.canEdit && <td className='col-xs-6 col-sm-6 col-md-3'>
           <ButtonGroup>
             <Button outline size='sm' color='primary' title='Move bookmark'
               onClick={() => this.props.moveBookmarkCallback(this.props.bookmark)}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, InputGroup, Table, Collapse, Button, Row, Form, FormGroup, Input, InputGroupAddon, Label } from 'reactstrap';
+import { Alert, InputGroup, Table, Collapse, Button, Row, Col, Form, FormGroup, Input, InputGroupAddon, Label } from 'reactstrap';
 import firebase from 'firebase/app';
 import Bookmark from "./Bookmark.js";
 import TableHeader from "./TableHeader.js";
@@ -148,17 +148,19 @@ export default class LinkList extends Component {
           </div>
         </Row>
         {bookmarks && bookmarks.length !== 0 &&
-          <Table hover responsive className='table' size='sm'>
-            <TableHeader
-              cols={['Name', 'URL', 'Added']}
-              sortCallback={(col) => { this.sortLinks(col) }}
-              sortCol={this.state.sortCol}
-              sortDir={this.state.sortDir}
-            />
-            <tbody>
-              {bookmarks}
-            </tbody>
-          </Table>
+          <div className='container'>
+            <Table hover size='sm'>
+              <TableHeader
+                cols={['Name', 'URL', 'Added']}
+                sortCallback={(col) => { this.sortLinks(col) }}
+                sortCol={this.state.sortCol}
+                sortDir={this.state.sortDir}
+              />
+              <tbody>
+                {bookmarks}
+              </tbody>
+            </Table>
+          </div>
         }
 
         {(!bookmarks || bookmarks.length === 0) &&

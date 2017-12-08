@@ -18,7 +18,7 @@ export default class TableHeader extends Component {
             }
 
             return (
-                <th key={colName}>
+                <th key={colName} className={'col-xs-3 col-' + colName}>
                     <Button outline size="sm" color="secondary"
                         onClick={() => { this.props.sortCallback(colName) }}
                         tabIndex={i + 1}
@@ -37,7 +37,8 @@ export default class TableHeader extends Component {
 
         return (
             <thead>
-                <tr>
+                <tr className='row'>
+                    <th><strong>Sort by</strong></th>
                     {headers}
                 </tr>
             </thead>
