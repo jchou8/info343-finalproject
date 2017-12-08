@@ -41,6 +41,8 @@ export default class Navigation extends Component {
               <FolderList
                 closeCallback={this.props.closeCallback}
                 user={this.props.user}
+                folders={this.props.folders}
+                createFolderCallback={this.props.createFolderCallback}
               />
 
               <Link to='/login'>
