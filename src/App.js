@@ -156,6 +156,7 @@ class App extends Component {
     let renderFolder = (props) => <Folder {...props}
       user={this.state.user}
       folders={this.state.folders}
+      folderPerms={this.state.permissions}
     />;
     let renderHomePage = (props) => <HomePage {...props}
       user={this.state.user}

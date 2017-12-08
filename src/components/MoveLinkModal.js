@@ -11,12 +11,15 @@ export default class MoveLinkModal extends Component {
         });
     }
 
-    buildLinkList(folders) {
+    buildLinkList(folders, perms) {
         let folderList = [];
-        if (folders) {
-            folderList = Object.keys(folders).map((id) => {
+        if (folders && perms) {
+            Object.keys(folders).forEach((id) => {
                 let folder = folders[id];
-                return { id: id, name: folder.name }
+                let perm = perms[id];
+                if (perm === 'edit' || perm === 'owner') {
+                    folderList.push({ id: id, name: folder.name });
+                }
             });
         }
 
@@ -24,11 +27,11 @@ export default class MoveLinkModal extends Component {
     }
 
     componentDidMount() {
-        this.buildLinkList(this.props.folders);
+        this.buildLinkList(this.props.folders, this.props.folderPerms);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.buildLinkList(nextProps.folders);
+        this.buildLinkList(nextProps.folders, nextProps.folderPerms);
         this.setState({ folder: nextProps.curFolderID });
     }
 

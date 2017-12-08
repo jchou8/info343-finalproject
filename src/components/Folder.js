@@ -238,6 +238,7 @@ export default class Folder extends Component {
                         bookmark={this.state.bookmarkToModify}
                         curFolderID={this.state.folderID}
                         folders={this.props.folders}
+                        folderPerms={this.props.folderPerms}
                     />}
             </div>);
         } else {
