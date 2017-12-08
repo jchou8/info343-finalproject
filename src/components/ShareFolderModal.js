@@ -130,6 +130,7 @@ export default class ShareFolderModal extends Component {
 
                             <InputGroup>
                                 <Input type='email' name='email' id='email' placeholder='example@example.com'
+                                    value={this.props.email}
                                     onChange={(e) => this.handleChange(e)}
                                 />
                                 <InputGroupButton>
@@ -151,7 +152,8 @@ export default class ShareFolderModal extends Component {
                                     </ButtonDropdown>
                                 </InputGroupButton>
                                 <InputGroupButton>
-                                    <Button color="primary" title='Invite user' onClick={(e) => this.shareFolder(e)}>
+                                    <Button color="primary" title='Invite user' onClick={(e) => this.shareFolder(e)}
+                                        disabled={this.state.email.length === 0}>
                                         <i className='fa fa-user-plus' aria-label='Invite user'></i>
                                     </Button>
                                 </InputGroupButton>

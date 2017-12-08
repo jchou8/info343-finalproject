@@ -118,7 +118,7 @@ export default class LinkList extends Component {
           deleteBookmarkCallback={(bookmark) => this.props.deleteBookmarkCallback(bookmark)}
           toggleDeleteModal={this.props.toggleDeleteModal}
           modal={this.props.modal}
-          permission={this.props.permission}
+          canEdit={canEdit}
         />);
 
         // Filter to search
