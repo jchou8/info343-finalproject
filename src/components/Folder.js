@@ -123,15 +123,6 @@ export default class Folder extends Component {
                     user={this.props.user}
                 />
 
-                <div className='row'>
-                    <div className="col-sm-4"></div>
-                    <div className='col-sm-4'>
-                        <InputGroup>
-                            <Input onChange={(e) => this.updateSearchVal(e)} placeholder='search bookmark...' /><Button><i className='fa fa-search' aria-hidden='true'></i></Button>
-                        </InputGroup>
-                    </div>
-                </div>
-
                 <LinkList folderID={this.state.folderID} links={this.state.folder.links} />
 
                 <ShareFolderModal
