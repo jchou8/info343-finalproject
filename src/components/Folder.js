@@ -118,16 +118,13 @@ export default class Folder extends Component {
         this.linksRef.child('/links').push(bookmark);
     }
 
+    confirmDeleteBookmark(bookmark) {
+        this.setState({ bookmarkToDelete: bookmark }, () => this.toggleModal('deleteLink'));
+    }
+
     deleteBookmark(bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
-    }
-
-    sortByDate() {
-       
-    }
-
-    sortByName() {
-       
+        this.setState({ bookmarkToDelete: null });
     }
 
     render() {
@@ -147,11 +144,8 @@ export default class Folder extends Component {
 
                 <LinkList links={this.state.folder.links}
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
-                    deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
+                    deleteBookmarkCallback={(bookmark) => this.confirmDeleteBookmark(bookmark)}
                     toggleDeleteModal={() => this.toggleModal('deleteLink')}
-                    toggleModal={() => this.toggleModal('')}
-                    sortByDateCallBack={() => this.sortByDate()}
-                    sortByNameCallBack={() => this.sortByName()}
                     modal={this.state.modal}
                 />
 
@@ -180,11 +174,20 @@ export default class Folder extends Component {
                     editCallback={(newText) => this.editName(newText)}
                     folderName={this.state.folder.name}
                 />
+
+                {this.state.bookmarkToDelete &&
+                    <DeleteModal
+                        open={this.state.modal === 'deleteLink'}
+                        toggleCallback={() => this.toggleModal('deleteLink')}
+                        deleteCallback={() => this.deleteBookmark(this.state.bookmarkToDelete.id)}
+                        type='link'
+                        name={this.state.bookmarkToDelete.Name}
+                    />}
             </div>);
         } else {
             return <Alert color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
         }
-        
+
         return content;
     }
 }

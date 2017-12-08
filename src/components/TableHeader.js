@@ -14,7 +14,7 @@ export default class TableHeader extends Component {
                     icon = <i className='fa fa-sort-desc' aria-label='Sorted descending'></i>;
                 }
             } else {
-                icon = <i className='fa fa-sort' aria-ignore='true'></i>;
+                icon = <i className='fa fa-sort' aria-hidden='true'></i>;
             }
 
             return (

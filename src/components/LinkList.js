@@ -32,7 +32,7 @@ export default class LinkList extends Component {
     if (links) {
       bookmarks = Object.keys(links).map((id) => Object.assign(links[id], { id: id }));
     }
-    this.setState({ bookmarks: bookmarks }, () => this.sortLinks(this.state.sortCol))
+    this.setState({ bookmarks: bookmarks }, () => this.sortLinks(this.state.sortCol, true))
   }
 
   handleChange(event) {
@@ -63,11 +63,11 @@ export default class LinkList extends Component {
   }
 
   // Sort data based on column
-  sortLinks(col) {
+  sortLinks(col, dontSwitch) {
     let newState = { sortDir: this.state.sortDir, sortCol: col };
 
     // Change sort direction if same column is clicked multiple times
-    if (this.state.sortCol === col) {
+    if (this.state.sortCol === col && !dontSwitch) {
       newState.sortDir = this.state.sortDir === 'asc' ? 'desc' : 'asc';
     }
 
@@ -134,7 +134,7 @@ export default class LinkList extends Component {
                   onChange={(e) => this.handleChange(e)}
                   placeholder='Enter custom name...'
                   value={this.state.bookmarkName}
-                  />
+                />
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -145,9 +145,9 @@ export default class LinkList extends Component {
                   name="bookmarkURL"
                   id='bookmarkURL'
                   onChange={(e) => this.handleChange(e)}
-                  placeholder='Enter URL...' 
+                  placeholder='Enter URL...'
                   value={this.state.bookmarkURL}
-              />
+                />
               </InputGroup>
             </FormGroup>
             <Button onClick={() => this.createNewBookmark()} disabled={(this.state.bookmarkName.length === 0) && (this.state.bookmarkURL.length === 0)} color="primary"><i className='fa fa-plus' aria-hidden='true'></i> Add Bookmark</Button>
@@ -162,10 +162,8 @@ export default class LinkList extends Component {
         let bookmarkObj = (<Bookmark
           key={bookmark.id}
           bookmark={bookmark}
-          deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
+          deleteBookmarkCallback={(bookmark) => this.props.deleteBookmarkCallback(bookmark)}
           toggleDeleteModal={this.props.toggleDeleteModal}
-          toggleModal={this.props.toggleModal}
-          toggleCallback={this.props.toggleCallback}
           modal={this.props.modal}
         />);
 
