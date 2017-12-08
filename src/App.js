@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import firebase from 'firebase/app';
 import md5 from 'md5';
 
@@ -20,7 +20,8 @@ class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      navActive: false
+      navActive: false,
+      folders: {}
     };
   }
 
@@ -34,10 +35,17 @@ class App extends Component {
         this.setState({ user: null });
       }
     });
+
+    // Get list of folders from db
+    this.foldersRef = firebase.database().ref('folders');
+    this.foldersRef.on('value', (snapshot) => {
+      this.setState({ folders: snapshot.val() });
+    });
   }
 
   componentWillUnmount() {
     this.authUnRegFunc();
+    this.foldersRef.off();
   }
 
   // Toggle the sidebar
@@ -107,6 +115,13 @@ class App extends Component {
       });
   }
 
+  //
+  createFolder(folder) {
+    let key = this.foldersRef.push(folder).key;
+    this.props.history.push('/bookmarks/' + key);
+    firebase.database().ref('userPermissions/' + this.state.user.uid + '/permissions/' + key).set('owner');
+  }
+
   render() {
     // Functions for router to render components and pass in necessary props
     let renderFolder = (props) => <Folder {...props}
@@ -125,35 +140,35 @@ class App extends Component {
     />;
 
     return (
-      <HashRouter>
-        <div className='app'>
-          <div className='wrapper'>
-            <Navigation
-              user={this.state.user}
-              signOutCallback={() => this.handleSignOut()}
-              toggleCallback={() => this.toggleNavbar()}
-              closeCallback={() => this.closeNavbar()}
-              active={this.state.navActive}
-            />
+      <div className='app'>
+        <div className='wrapper'>
+          <Navigation
+            user={this.state.user}
+            folders={this.state.folders}
+            signOutCallback={() => this.handleSignOut()}
+            toggleCallback={() => this.toggleNavbar()}
+            closeCallback={() => this.closeNavbar()}
+            createFolderCallback={(folder) => this.createFolder(folder)}
+            active={this.state.navActive}
+          />
 
-            <div className='container main-content'>
-              <main>
-                {this.state.error && <Alert color='danger' aria-live='polite'>{this.state.error}</Alert>}
-                {this.state.loading && <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />}
+          <div className='container main-content'>
+            <main>
+              {this.state.error && <Alert color='danger' aria-live='polite'>{this.state.error}</Alert>}
+              {this.state.loading && <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />}
 
-                <Switch>
-                  <Route exact path='/' render={renderHomePage} />
-                  <Route path='/register' render={renderRegister} />
-                  <Route path='/login' render={renderLogin} />
-                  <Route path='/bookmarks/:folderID' render={renderFolder} />
-                </Switch>
-              </main>
-            </div>
+              <Switch>
+                <Route exact path='/' render={renderHomePage} />
+                <Route path='/register' render={renderRegister} />
+                <Route path='/login' render={renderLogin} />
+                <Route path='/bookmarks/:folderID' render={renderFolder} />
+              </Switch>
+            </main>
           </div>
         </div>
-      </HashRouter>
+      </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

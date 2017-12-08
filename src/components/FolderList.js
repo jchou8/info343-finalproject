@@ -11,21 +11,8 @@ class Navigation extends Component {
         super(props)
         this.state = {
             createActive: false,
-            folderName: '',
-            folders: {}
+            folderName: ''
         }
-    }
-
-    componentDidMount() {
-        // Get list of folders from db
-        this.foldersRef = firebase.database().ref('folders');
-        this.foldersRef.on('value', (snapshot) => {
-            this.setState({ folders: snapshot.val() });
-        });
-    }
-
-    componentWillUnmount() {
-        this.foldersRef.off();
     }
 
     // testing for clicking the create folder button
@@ -51,12 +38,8 @@ class Navigation extends Component {
             public: false,
             users: {}
         }
-
-        let key = firebase.database().ref('folders').push(folder).key;
-        this.props.history.push('/bookmarks/' + key);
-
-        firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + key).set('owner');
-
+        
+        this.props.createFolderCallback(folder);
         this.setState({ folderName: '' });
         this.closeCreateFolder();
     }
@@ -68,7 +51,7 @@ class Navigation extends Component {
 
     render() {
         let user = this.props.user;
-        let folders = this.state.folders;
+        let folders = this.props.folders;
         let folderIDs = [];
         if (folders) {
             folderIDs = Object.keys(folders);
