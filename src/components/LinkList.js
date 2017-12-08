@@ -93,6 +93,10 @@ export default class LinkList extends Component {
             id={id}
             bookmark={bookmark}
             deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
+            toggleDeleteModal={this.props.toggleDeleteModal}
+            toggleModal={this.props.toggleModal}
+            toggleCallback={() => this.props.toggleCallback}
+            modal={this.props.modal}
           />);
         
         // Add filtering here

@@ -102,7 +102,7 @@ export default class Folder extends Component {
     }
 
     deleteBookmark(bookmarkId) {
-        console.log(bookmarkId);
+        firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
     }
 
     updateSearchVal(event) {
@@ -132,6 +132,9 @@ export default class Folder extends Component {
                 <LinkList links={this.state.folder.links} 
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
                     deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
+                    toggleDeleteModal={() => this.toggleModal('deleteLink')}
+                    toggleModal={() => this.toggleModal('')}
+                    modal={this.state.modal}
                 />
 
                 <ShareFolderModal

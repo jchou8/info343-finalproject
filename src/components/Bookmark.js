@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DeleteModal from './DeleteModal';
 //import { Container, Row, Col } from 'reactstrap';
 
 export default class Bookmark extends Component {
@@ -11,21 +12,38 @@ export default class Bookmark extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({id: nextProps.id})
+  }
+
   handleDelete() {
-    // this.props.deleteBookmarkCallback(this.props.id);
-    console.log(this.state.id)
+    this.props.toggleDeleteModal();
+  }
+
+  deleteLink() {
+    this.props.deleteBookmarkCallback(this.state.id);
+    this.props.toggleModal();
   }
 
   render() {
     let date = this.props.bookmark.Date;
     //todo: needs a handleDelete() callback to linkedlist on the FA icon
     return (
-        <tr>
-          <td>{this.props.bookmark.Date}</td>
-          <td><a href={this.props.bookmark.URL} target="_blank">{this.props.bookmark.Name}</a></td>
-          <td>{this.props.bookmark.URL}</td>
-          <td><i className="fa fa-trash-o" onClick={this.handleDelete}></i></td>
-        </tr>
+      <tr>
+        <DeleteModal
+        open={this.props.modal === 'deleteLink'}
+        toggleCallback={() => this.props.toggleModal()}
+        deleteCallback={() => this.deleteLink()}
+        type='link'
+        name={this.props.bookmark.Name}
+        />
+        <td>{this.props.bookmark.Date}</td>
+        <td><a href={this.props.bookmark.URL} target="_blank">{this.props.bookmark.Name}</a></td>
+        <td>{this.props.bookmark.URL}</td>
+        <td><i className="fa fa-trash-o" onClick={() => this.handleDelete()}></i></td>
+        <td><i className="fa fa-pencil"></i></td>
+
+      </tr>
     );
   }
 }
