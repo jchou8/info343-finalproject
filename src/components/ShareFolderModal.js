@@ -108,7 +108,7 @@ export default class ShareFolderModal extends Component {
                     {isPublic ?
                         <div>
                             <Label for='link'>Anyone with this link can view this folder:</Label>
-                            <Input type="text" name='link' id='link' value={process.env.PUBLIC_URL + '/#/bookmarks/' + this.props.folderID} readOnly
+                            <Input type="text" name='link' id='link' value={window.location.href} readOnly
                                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" />
                         </div>
 
