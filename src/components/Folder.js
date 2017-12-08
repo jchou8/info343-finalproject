@@ -145,12 +145,13 @@ export default class Folder extends Component {
     }
 
     render() {
+        let canAccess = this.props.user && (this.state.perm === 'owner' || this.state.perm === 'edit' || this.state.perm === 'view');
         let content = null;
         if (this.state.loading) {
             content = <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />;
         } else if (!this.state.folder) {
             content = <Redirect to='/' />;
-        } else if (this.props.user || (this.state.folder && this.state.folder.public)) {
+        } else if (canAccess || (this.state.folder && this.state.folder.public)) {
             content = (<div>
                 <FolderHeader folder={this.state.folder}
                     toggleShareModal={() => this.toggleModal('share')}

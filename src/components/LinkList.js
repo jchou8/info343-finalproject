@@ -11,7 +11,7 @@ export default class LinkList extends Component {
     this.state = {
       createActive: false,
       searchValue: '',
-      sortCol: 'Date',
+      sortCol: 'Added',
       sortDir: 'asc',
 
       bookmarks: []
@@ -64,7 +64,7 @@ export default class LinkList extends Component {
     }
 
     let sortFn;
-    if (col === 'Date') {
+    if (col === 'Added') {
       sortFn = this.sortByDate;
     } else if (col === 'Name') {
       sortFn = this.sortByName;
@@ -150,8 +150,7 @@ export default class LinkList extends Component {
         {bookmarks && bookmarks.length !== 0 &&
           <Table hover responsive className='table' size='sm'>
             <TableHeader
-              cols={['Name', 'URL', 'Date']}
-              colWidths={[5, 5, 2]}
+              cols={['Name', 'URL', 'Added']}
               sortCallback={(col) => { this.sortLinks(col) }}
               sortCol={this.state.sortCol}
               sortDir={this.state.sortDir}

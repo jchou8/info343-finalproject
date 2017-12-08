@@ -12,7 +12,8 @@ export default class ShareFolderModal extends Component {
             dropdownOpen: false,
             shareMode: 'view',
 
-            userList: []
+            userList: {},
+            listUpdated: false
         };
     }
 
@@ -25,21 +26,16 @@ export default class ShareFolderModal extends Component {
     }
 
     updateUsers(users) {
-        this.setState({ userList: [] });
+        this.setState({ userList: {} });
         if (users) {
             Object.keys(users).forEach((id) => {
                 firebase.database().ref('userPermissions/' + id + '/userName').once('value')
                     .then((snapshot) => {
                         let displayName = snapshot.val();
-                        let curUsers = this.state.userList;
-                        this.setState({
-                            userList: curUsers.concat({
-                                id: id,
-                                name: displayName,
-                                perm: users[id]
-                            })
-                        });
-                    })
+                        let newUsers = Object.assign(this.state.userList, { [id]: { name: displayName, perm: users[id] } });
+                        console.log(newUsers);
+                        this.setState({ userList: newUsers });
+                    });
             });
         }
     }
@@ -72,15 +68,16 @@ export default class ShareFolderModal extends Component {
     render() {
         let isPublic = this.props.folder.public;
 
-        let users = null;
+        let users = [];
         if (this.state.userList) {
-            users = this.state.userList.map((user) => {
+            let userIDs = Object.keys(this.state.userList)
+            users = userIDs.map((id) => {
+                let user = this.state.userList[id];
                 let permDisplay = (<span>
                     <i className={'fa fa-' + (user.perm === 'edit' ? 'pencil' : 'eye')} aria-hidden='true'></i>{' '}
                     Can <strong>{user.perm}</strong>
                 </span>)
-
-                return (<tr key={user.id}>
+                return (<tr key={id}>
                     <td>
                         {user.name}
                     </td>
@@ -89,7 +86,7 @@ export default class ShareFolderModal extends Component {
                     </td>
                     <td>
                         <Button size='sm' color='link' title='Remove user'
-                        onClick={() => this.props.removeUserCallback(user.id)}>
+                            onClick={() => this.props.removeUserCallback(id)}>
                             <i className="fa fa-remove" aria-label='Remove user'></i>
                         </Button>
                     </td>
@@ -163,7 +160,7 @@ export default class ShareFolderModal extends Component {
                         </FormGroup>
                     </Form>
 
-                    {users && <div>
+                    {users.length !== 0 && <div>
                         <h4>Current users</h4>
                         <Table hover responsive>
                             <tbody>
