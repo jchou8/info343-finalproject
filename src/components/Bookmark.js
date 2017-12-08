@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import DeleteModal from './DeleteModal';
-//import { Container, Row, Col } from 'reactstrap';
+import Time from 'react-time';
 
 export default class Bookmark extends Component {
   //takes in BookMarkList prop
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -13,7 +13,7 @@ export default class Bookmark extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({id: nextProps.id})
+    this.setState({ id: nextProps.id })
   }
 
   handleDelete() {
@@ -31,15 +31,15 @@ export default class Bookmark extends Component {
     return (
       <tr>
         <DeleteModal
-        open={this.props.modal === 'deleteLink'}
-        toggleCallback={() => this.props.toggleModal()}
-        deleteCallback={() => this.deleteLink()}
-        type='link'
-        name={this.props.bookmark.Name}
+          open={this.props.modal === 'deleteLink'}
+          toggleCallback={() => this.props.toggleModal()}
+          deleteCallback={() => this.deleteLink()}
+          type='link'
+          name={this.props.bookmark.Name}
         />
-        <td>{this.props.bookmark.Date}</td>
         <td><a href={this.props.bookmark.URL} target="_blank">{this.props.bookmark.Name}</a></td>
         <td>{this.props.bookmark.URL}</td>
+        <td><Time value={this.props.bookmark.Date} relative/></td>
         <td><i className="fa fa-trash-o" onClick={() => this.handleDelete()}></i></td>
         <td><i className="fa fa-pencil"></i></td>
 

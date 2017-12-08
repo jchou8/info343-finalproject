@@ -1,114 +1,44 @@
 import React, { Component } from 'react';
 import { InputGroup, Table, Button, Row, Form, FormGroup, Input, Label } from 'reactstrap';
-//import { Redirect } from 'react-router-dom';
-import Bookmark from "./Bookmark.js";
 import firebase from 'firebase/app';
+import Bookmark from "./Bookmark.js";
+import TableHeader from "./TableHeader.js";
 
 export default class LinkList extends Component {
-  //takes in one prop folderName and renders list of Bookmark objects
   constructor(props) {
     super(props);
     this.state = {
       createActive: false,
       bookmarkName: '',
       bookmarkURL: '',
-      sortValue: '',
       searchValue: '',
+      sortCol: 'Date',
+      sortDir: 'desc',
+
       bookmarks: []
     };
   }
 
   componentDidMount() {
-    let tempBookmarks = [];
-    if (this.props.links) {
-      let bookmarkIDs = Object.keys(this.props.links);
-      bookmarkIDs.forEach((id) => {
-        let bookmark = this.props.links[id];
-        let bookmarkObj = (
-          <Bookmark
-            key={id}
-            id={id}
-            bookmark={bookmark}
-            deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
-            toggleDeleteModal={this.props.toggleDeleteModal}
-            toggleModal={this.props.toggleModal}
-            toggleCallback={() => this.props.toggleCallback}
-            modal={this.props.modal}
-          />);
-        
-        // Add filtering here
-        if (!this.state.searchValue || this.state.searchValue.length === 0 ||
-            (this.state.searchValue && bookmark.Name.indexOf(this.state.searchValue) !== -1) ||
-            (this.state.searchValue && bookmark.URL.indexOf(this.state.searchValue) !== -1)) {
-          tempBookmarks.push(bookmarkObj);
-        }
-      });
-    }
-      this.setState({bookmarks: tempBookmarks});
+    this.updateStateLinks(this.props.links);
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('test');
-    let tempBookmarks = [];
-    if (nextProps.links) {
-      let bookmarkIDs = Object.keys(nextProps.links);
-      bookmarkIDs.forEach((id) => {
-        let bookmark = nextProps.links[id];
-        let bookmarkObj = (
-          <Bookmark
-            key={id}
-            id={id}
-            bookmark={bookmark}
-            deleteBookmarkCallback={(bookmarkId) => nextProps.deleteBookmarkCallback(bookmarkId)}
-            toggleDeleteModal={nextProps.toggleDeleteModal}
-            toggleModal={nextProps.toggleModal}
-            toggleCallback={() => nextProps.toggleCallback}
-            modal={nextProps.modal}
-          />);
-        
-        // Add filtering here
-        if (!this.state.searchValue || this.state.searchValue.length === 0 ||
-            (this.state.searchValue && bookmark.Name.indexOf(this.state.searchValue) !== -1) ||
-            (this.state.searchValue && bookmark.URL.indexOf(this.state.searchValue) !== -1)) {
-          tempBookmarks.push(bookmarkObj);
-        }
-      });
-    }
-      this.setState({bookmarks: tempBookmarks});
+    this.updateStateLinks(nextProps.links);
   }
 
+  updateStateLinks(links) {
+    let bookmarks = [];
+    if (links) {
+      bookmarks = Object.keys(links).map((id) => Object.assign(links[id], { id: id }));
+    }
+    this.setState({ bookmarks: bookmarks }, () => this.sortLinks(this.state.sortCol))
+  }
 
   handleChange(event) {
     let newState = {};
     newState[event.target.name] = event.target.value;
     this.setState(newState);
-
-    let tempBookmarks = [];
-    if (this.props.links) {
-      let bookmarkIDs = Object.keys(this.props.links);
-      bookmarkIDs.forEach((id) => {
-        let bookmark = this.props.links[id];
-        let bookmarkObj = (
-          <Bookmark
-            key={id}
-            id={id}
-            bookmark={bookmark}
-            deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
-            toggleDeleteModal={this.props.toggleDeleteModal}
-            toggleModal={this.props.toggleModal}
-            toggleCallback={() => this.props.toggleCallback}
-            modal={this.props.modal}
-          />);
-        
-        // Add filtering here
-        if (!event.target.value || event.target.value.length === 0 ||
-            (event.target.value && bookmark.Name.indexOf(event.target.value) !== -1) ||
-            (event.target.value && bookmark.URL.indexOf(event.target.value) !== -1)) {
-          tempBookmarks.push(bookmarkObj);
-        }
-      });
-    }
-      this.setState({bookmarks: tempBookmarks});
   }
 
   toggleCreateBookmark() {
@@ -123,42 +53,65 @@ export default class LinkList extends Component {
 
   createNewBookmark() {
     let newBookmark = {
-      Date: new Date().toLocaleDateString("en-US"),
+      Date: firebase.database.ServerValue.TIMESTAMP,
       Name: this.state.bookmarkName,
       URL: this.state.bookmarkURL
     }
+
     this.props.addBookmarkCallback(newBookmark);
-    this.setState({bookmarkName: '', bookmarkURL: ''});
+    this.setState({ bookmarkName: '', bookmarkURL: '' });
   }
 
-  sortByDate() {
-    this.props.sortByDateCallBack();
-    let tempBookmarks = this.state.bookmarks;
-    tempBookmarks.sort((a,b) => {
-      if(a['props']['bookmark']['Date'] < b['props']['bookmark']['Date']) {
-        return 1;
-      }
-      if(a['props']['bookmark']['Date'] > b['props']['bookmark']['Date']) {
-        return -1;
-      }
-      return 0;
-    })
-    this.setState({bookmarks: tempBookmarks})
+  // Sort data based on column
+  sortLinks(col) {
+    let newState = { sortDir: this.state.sortDir, sortCol: col };
+
+    // Change sort direction if same column is clicked multiple times
+    if (this.state.sortCol === col) {
+      newState.sortDir = this.state.sortDir === 'asc' ? 'desc' : 'asc';
+    }
+
+    let sortFn;
+    if (col === 'Date') {
+      sortFn = this.sortByDate;
+    } else if (col === 'Name') {
+      sortFn = this.sortByName;
+    } else {
+      sortFn = this.sortByURL;
+    }
+
+    let reverse = newState.sortDir === 'asc' ? 1 : -1;
+    newState.bookmarks = this.state.bookmarks.sort((a, b) => sortFn(a, b, reverse));
+    this.setState(newState);
   }
 
-  sortByName() {
-    this.props.sortByNameCallBack();
-    let tempBookmarks = this.state.bookmarks;
-    tempBookmarks.sort((a,b) => {
-      if(a['props']['bookmark']['Name'] < b['props']['bookmark']['Name']) {
-        return -1;
-      }
-      if(a['props']['bookmark']['Name'] > b['props']['bookmark']['Name']) {
-        return 1;
-      }
-      return 0;
-    })
-    this.setState({bookmarks: tempBookmarks})
+  sortByDate(a, b, reverse) {
+    return (b.Date - a.Date) * reverse;
+  }
+
+  sortByName(a, b, reverse) {
+    let diff = 0;
+    if (a.Name < b.Name) {
+      diff = -1;
+    } else if (a.Name > b.Name) {
+      diff = 1;
+    } else {
+      diff = (a, b, reverse) => this.sortByDate(a, b, -reverse);
+    }
+    return diff * reverse;
+  }
+
+  sortByURL(a, b, reverse) {
+    let diff = 0;
+    if (a.URL < b.URL) {
+      diff = -1;
+    } else if (a.URL > b.URL) {
+      diff = 1;
+    } else {
+      diff = (a, b, reverse) => this.sortByName(a, b, -reverse);
+    }
+
+    return diff * reverse;
   }
 
   render() {
@@ -179,7 +132,9 @@ export default class LinkList extends Component {
                   name="bookmarkName"
                   id='bookmarkName'
                   onChange={(e) => this.handleChange(e)}
-                  placeholder='Enter custom name...' />
+                  placeholder='Enter custom name...'
+                  value={this.state.bookmarkName}
+                  />
               </InputGroup>
             </FormGroup>
             <FormGroup>
@@ -190,7 +145,9 @@ export default class LinkList extends Component {
                   name="bookmarkURL"
                   id='bookmarkURL'
                   onChange={(e) => this.handleChange(e)}
-                  placeholder='Enter URL...' />
+                  placeholder='Enter URL...' 
+                  value={this.state.bookmarkURL}
+              />
               </InputGroup>
             </FormGroup>
             <Button onClick={() => this.createNewBookmark()} disabled={(this.state.bookmarkName.length === 0) && (this.state.bookmarkURL.length === 0)} color="primary"><i className='fa fa-plus' aria-hidden='true'></i> Add Bookmark</Button>
@@ -199,45 +156,28 @@ export default class LinkList extends Component {
       );
     }
 
-    // let bookmarks = [];
-    
-    // if (this.props.links) {
-    //   let bookmarkIDs = Object.keys(this.props.links);
-    //   bookmarkIDs.forEach((id) => {
-    //     let bookmark = this.props.links[id];
-    //     let bookmarkObj = (
-    //       <Bookmark
-    //         key={id}
-    //         id={id}
-    //         bookmark={bookmark}
-    //         deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
-    //         toggleDeleteModal={this.props.toggleDeleteModal}
-    //         toggleModal={this.props.toggleModal}
-    //         toggleCallback={() => this.props.toggleCallback}
-    //         modal={this.props.modal}
-    //       />);
-        
-    //     // Add filtering here
-    //     if (!this.state.searchVal || this.state.searchVal.length === 0 ||
-    //         (this.state.searchVal && bookmark.Name.indexOf(this.state.searchVal) !== -1) ||
-    //         (this.state.searchVal && bookmark.URL.indexOf(this.state.searchVal) !== -1)) {
-    //       bookmarks.push(bookmarkObj);
-    //     }
-    //   });
-      // this.setState({bookmarks: bookmarks})
-      // console.log(bookmarks[0]['props']['bookmark']['Name'])
-      // bookmarks.sort((a,b) => {
-      //   if(a['props']['bookmark']['Name'] < b['props']['bookmark']['Name']) {
-      //     return -1;
-      //   }
-      //   if(a['props']['bookmark']['Name'] > b['props']['bookmark']['Name']) {
-      //     return 1;
-      //   }
-      //   return 0;
-      // })
-      // console.log(bookmarks)
-    // }
-    console.log(this.state.searchValue);
+    let bookmarks = [];
+    if (this.state.bookmarks) {
+      this.state.bookmarks.forEach((bookmark) => {
+        let bookmarkObj = (<Bookmark
+          key={bookmark.id}
+          bookmark={bookmark}
+          deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
+          toggleDeleteModal={this.props.toggleDeleteModal}
+          toggleModal={this.props.toggleModal}
+          toggleCallback={this.props.toggleCallback}
+          modal={this.props.modal}
+        />);
+
+        // Filter to search
+        if (!this.state.searchValue || this.state.searchValue.length === 0 ||
+          (this.state.searchValue && bookmark.Name.indexOf(this.state.searchValue) !== -1) ||
+          (this.state.searchValue && bookmark.URL.indexOf(this.state.searchValue) !== -1)) {
+          bookmarks.push(bookmarkObj);
+        }
+      });
+    }
+
     return (
       <div>
         <Row className='ml-2'>
@@ -247,30 +187,18 @@ export default class LinkList extends Component {
               <Input type="text" name="searchValue" id="searchValue" onChange={(e) => this.handleChange(e)} placeholder='Search bookmarks...' />
             </InputGroup>
           </div>
-          {/* <FormGroup className='col-xs-12 col-sm-4'>
-            <InputGroup>
-              <Label for="sortValue">Sort by</Label>
-              <Input type="select" name="select" id="sortValue">
-                <option>Recently added</option>
-                <option>A-Z</option>
-                <option>Z-A</option>
-              </Input>
-            </InputGroup>
-          </FormGroup> */}
         </Row>
-        <Table className='mt-2 table-responsive'>
-          {this.state.bookmarks &&
-            <thead>
-              <tr>
-                <th><Button onClick={() => this.sortByDate()}>Date</Button></th>
-                <th><Button onClick={() => this.sortByName()}>Name</Button></th>
-                <th>URL</th>
-                <th></th>
-              </tr>
-            </thead>
+        <Table className='mt-2 table-responsive link-table'>
+          {bookmarks &&
+            <TableHeader
+              cols={['Name', 'URL', 'Date']}
+              sortCallback={(col) => { this.sortLinks(col) }}
+              sortCol={this.state.sortCol}
+              sortDir={this.state.sortDir}
+            />
           }
           <tbody>
-            {this.state.bookmarks}
+            {bookmarks}
           </tbody>
         </Table>
       </div>

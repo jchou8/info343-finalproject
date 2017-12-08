@@ -23,7 +23,8 @@ export default class Navigation extends Component {
         <Link to='/' className='header-link'>
           <header className='page-header'>
             <h1 className='app-title'>
-              bookmarker
+              <i className='fa fa-bookmark' aria-hidden='true'></i>
+              <span style={{color: '#98bdf9'}}> mark</span>it
             </h1>
           </header>
         </Link>
