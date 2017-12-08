@@ -155,6 +155,7 @@ class App extends Component {
     // Functions for router to render components and pass in necessary props
     let renderFolder = (props) => <Folder {...props}
       user={this.state.user}
+      folders={this.state.folders}
     />;
     let renderHomePage = (props) => <HomePage {...props}
       user={this.state.user}

@@ -148,10 +148,17 @@ export default class Folder extends Component {
 
     editBookmark(newName, newURL, bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).set(
-            Object.assign(this.state.bookmarkToModify, {Name: newName, URL: newURL})
+            Object.assign(this.state.bookmarkToModify, { Name: newName, URL: newURL })
         );
         this.setState({ bookmarkToModify: null });
     }
+
+    moveBookmark(newFolderID, bookmarkId) {
+        firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
+        firebase.database().ref('folders/' + newFolderID + '/links').push(this.state.bookmarkToModify);
+        this.setState({ bookmarkToModify: null });
+    }
+
 
     render() {
         let canAccess = this.props.user && (this.state.perm === 'owner' || this.state.perm === 'edit' || this.state.perm === 'view');
@@ -227,8 +234,10 @@ export default class Folder extends Component {
                     <MoveLinkModal
                         open={this.state.modal === 'moveLink'}
                         toggleCallback={() => this.toggleModal('moveLink')}
-                        moveCallback={() => this.moveBookmark(this.state.bookmarkToModify.id)}
+                        moveCallback={(id) => this.moveBookmark(id, this.state.bookmarkToModify.id)}
                         bookmark={this.state.bookmarkToModify}
+                        curFolderID={this.state.folderID}
+                        folders={this.props.folders}
                     />}
             </div>);
         } else {
