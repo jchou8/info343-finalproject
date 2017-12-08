@@ -97,6 +97,10 @@ export default class Folder extends Component {
         }
     }
 
+    addBookmark(bookmark) {
+        firebase.database().ref('folders/' + this.state.folderID + '/links').push(bookmark);
+    }
+
     updateSearchVal(event) {
         this.setState({ searchValue: event.target.value });
         console.log(this.state.searchValue);
@@ -123,8 +127,9 @@ export default class Folder extends Component {
                     user={this.props.user}
                 />
 
-                <LinkList folderID={this.state.folderID} links={this.state.folder.links} />
-                
+                <LinkList links={this.state.folder.links} 
+                    addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
+                />
 
                 <ShareFolderModal
                     open={this.state.modal === 'share'}
