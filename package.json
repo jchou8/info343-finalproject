@@ -2,6 +2,7 @@
   "name": "info343-finalproject",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jchou8.github.io/markit/",
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "firebase": "^4.7.0",
@@ -18,6 +19,8 @@
     "reactstrap": "^5.0.0-alpha.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
