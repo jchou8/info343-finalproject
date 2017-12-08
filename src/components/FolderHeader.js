@@ -7,6 +7,10 @@ export default class FolderHeader extends Component {
         let isOwner = this.props.user && (folder.ownerID === this.props.user.uid);
 
         let numLinks = folder.links ? Object.keys(folder.links).length : 0;
+        let displayLinks = numLinks + ' link';
+        if (numLinks !== 1) {
+            displayLinks += 's';
+        }
 
         return (
             <div className='folder-header'>
@@ -14,6 +18,8 @@ export default class FolderHeader extends Component {
                     {folder.name}
                 </h2>
 
+                <div className='text-muted folder-subtitle'>{displayLinks}</div>
+                
                 {isOwner && <div className='header-buttons'>
                     <Button color='primary' outline title='Share folder'
                         onClick={this.props.toggleShareModal}>

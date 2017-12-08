@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Collapse, Form, FormGroup, InputGroup, InputGroupAddon, Label, Input } from 'reactstrap';
-import Time from 'react-time';
+import { Button, Collapse, Form, FormGroup, InputGroup, InputGroupAddon, Input } from 'reactstrap';
 
 export default class Bookmark extends Component {
     constructor(props) {

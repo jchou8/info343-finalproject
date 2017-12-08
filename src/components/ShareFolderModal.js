@@ -33,7 +33,6 @@ export default class ShareFolderModal extends Component {
                     .then((snapshot) => {
                         let displayName = snapshot.val();
                         let newUsers = Object.assign(this.state.userList, { [id]: { name: displayName, perm: users[id] } });
-                        console.log(newUsers);
                         this.setState({ userList: newUsers });
                     });
             });

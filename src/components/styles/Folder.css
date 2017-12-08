@@ -40,3 +40,11 @@ th.col-Added, td.col-Added {
 .bookmark-name {
     font-weight: 600;
 }
+
+.folder-title {
+    margin-bottom: 0;
+}
+
+.folder-subtitle {
+    margin-bottom: 0.5rem;
+}

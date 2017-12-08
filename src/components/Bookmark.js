@@ -8,7 +8,7 @@ export default class Bookmark extends Component {
     return (
       <tr className='row'>
         <td className='bookmark-name text-left col-xs-12 col-sm-6 col-md-3 col-Name'><a href={bookmark.URL} target="_blank">
-          <img src={'https://www.google.com/s2/favicons?domain=' + bookmark.URL} />
+          <img src={'https://www.google.com/s2/favicons?domain=' + bookmark.URL} alt='Favicon' />
           {' ' + bookmark.Name}</a>
         </td>
         <td className='text-left col-xs-12 col-sm-6 col-md-3 col-URL'><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
