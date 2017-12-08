@@ -33,11 +33,13 @@ export default class Folder extends Component {
             this.setState({ folder: snapshot.val(), folderID: folderID, loading: false });
         });
 
-        firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + folderID).once('value')
+        if (this.props.user) {
+            firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + folderID).once('value')
             .then((snapshot) => {
                 let perm = snapshot.val();
                 this.setState({perm: perm});
             });
+        }
     }
 
     componentDidMount() {
@@ -62,6 +64,10 @@ export default class Folder extends Component {
     toggleModal(modal) {
         let newModal = this.state.modal === modal ? '' : modal;
         this.setState({ modal: newModal });
+
+        if (newModal === '') {
+
+        }
     }
 
     deleteFolder() {
@@ -130,12 +136,12 @@ export default class Folder extends Component {
     }
 
     confirmDeleteBookmark(bookmark) {
-        this.setState({ bookmarkToDelete: bookmark }, () => this.toggleModal('deleteLink'));
+        this.setState({ bookmarkToModify: bookmark }, () => this.toggleModal('deleteLink'));
     }
 
     deleteBookmark(bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
-        this.setState({ bookmarkToDelete: null });
+        this.setState({ bookmarkToModify: null });
     }
 
     render() {
@@ -188,13 +194,13 @@ export default class Folder extends Component {
                     folderName={this.state.folder.name}
                 />
 
-                {this.state.bookmarkToDelete &&
+                {this.state.bookmarkToModify &&
                     <DeleteModal
                         open={this.state.modal === 'deleteLink'}
                         toggleCallback={() => this.toggleModal('deleteLink')}
-                        deleteCallback={() => this.deleteBookmark(this.state.bookmarkToDelete.id)}
+                        deleteCallback={() => this.deleteBookmark(this.state.bookmarkToModify.id)}
                         type='link'
-                        name={this.state.bookmarkToDelete.Name}
+                        name={this.state.bookmarkToModify.Name}
                     />}
             </div>);
         } else {

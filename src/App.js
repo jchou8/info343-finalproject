@@ -50,7 +50,7 @@ class App extends Component {
     // Update state when user logs in/out
     this.authUnRegFunc = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user: user });
+        this.setState({ user: user, loading: false });
 
         // Get user permissions
         this.permsRef = firebase.database().ref('userPermissions/' + user.uid + '/permissions');
@@ -65,7 +65,7 @@ class App extends Component {
         });
 
       } else {
-        this.setState({ user: null, folders: null, permissions: null });
+        this.setState({ user: null, folders: null, permissions: null, loading: false });
       }
     });
   }
@@ -187,19 +187,17 @@ class App extends Component {
             <main>
               {this.state.error && <Alert color='danger' aria-live='polite'>{this.state.error}</Alert>}
               {this.state.loading && <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />}
-              {!this.state.loading &&
-                <Switch>
-                  <Route exact path='/' render={renderHomePage} />
-                  <Route path='/register' render={renderRegister} />
-                  <Route path='/login' render={renderLogin} />
-                  <Route path='/bookmarks/:folderID' render={renderFolder} />
-                </Switch>
-              }
+              <Switch>
+                <Route exact path='/' render={renderHomePage} />
+                <Route path='/register' render={renderRegister} />
+                <Route path='/login' render={renderLogin} />
+                <Route path='/bookmarks/:folderID' render={renderFolder} />
+              </Switch>
             </main>
           </div>
-          </div>
         </div>
-        );
+      </div>
+    );
   }
 }
 
