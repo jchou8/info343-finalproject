@@ -101,13 +101,15 @@ export default class Folder extends Component {
         firebase.database().ref('folders/' + this.state.folderID + '/links').push(bookmark);
     }
 
+    deleteBookmark(bookmarkId) {
+        console.log(bookmarkId);
+    }
+
     updateSearchVal(event) {
         this.setState({ searchValue: event.target.value });
-        console.log(this.state.searchValue);
         this.curFolder = firebase.database().ref('folders/' + this.props.match.params.folderID);
         // Checks that we're in the right folder (to be modified once bookmarks can be added)
         this.curFolder.on('value', (snapshot) => {
-            console.log(snapshot.val());
             this.setState({ links: snapshot.val() });
         });
     }
@@ -129,6 +131,7 @@ export default class Folder extends Component {
 
                 <LinkList links={this.state.folder.links} 
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
+                    deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
                 />
 
                 <ShareFolderModal

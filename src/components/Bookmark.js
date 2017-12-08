@@ -5,6 +5,15 @@ export default class Bookmark extends Component {
   //takes in BookMarkList prop
   constructor(props){
     super(props);
+
+    this.state = {
+      id: this.props.id
+    };
+  }
+
+  handleDelete() {
+    // this.props.deleteBookmarkCallback(this.props.id);
+    console.log(this.state.id)
   }
 
   render() {
@@ -15,7 +24,7 @@ export default class Bookmark extends Component {
           <td>{this.props.bookmark.Date}</td>
           <td><a href={this.props.bookmark.URL} target="_blank">{this.props.bookmark.Name}</a></td>
           <td>{this.props.bookmark.URL}</td>
-          <td><i className="fa fa-trash-o"></i></td>
+          <td><i className="fa fa-trash-o" onClick={this.handleDelete}></i></td>
         </tr>
     );
   }

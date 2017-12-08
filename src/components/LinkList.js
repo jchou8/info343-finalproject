@@ -44,7 +44,6 @@ export default class LinkList extends Component {
   }
 
   render() {
-    console.log(this.props);
     // Changes the display of create folder
     let createBookmark = null;
     if (!this.state.createActive) {
@@ -91,7 +90,9 @@ export default class LinkList extends Component {
         let bookmarkObj = (
           <Bookmark
             key={id}
+            id={id}
             bookmark={bookmark}
+            deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
           />);
         
         // Add filtering here
