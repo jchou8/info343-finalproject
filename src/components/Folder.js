@@ -22,9 +22,7 @@ export default class Folder extends Component {
             modal: '',
             loading: true,
 
-            // Search bar
-            searchValue: null,
-            links: null
+            shareError: ''
         };
     }
 
@@ -97,21 +95,31 @@ export default class Folder extends Component {
         }
     }
 
+    shareFolder(email, mode) {
+        this.setState({ shareError: '' });
+        firebase.database().ref('emailToUID/' + email.replace('.', ',')).once('value')
+            .then((snapshot) => {
+                let userID = snapshot.val();
+                if (userID === null) {
+                    this.setState({ shareError: 'User with that email does not exist.' });
+                } else if (userID === this.props.user.uid) {
+                    this.setState({ shareError: 'Cannot share a folder with yourself.' });
+                } else if (mode !== 'remove') {
+                    this.linksRef.child('/users/' + userID).set(mode);
+                    firebase.database().ref('userPermissions/' + userID + '/permissions/' + this.state.folderID).set(mode);
+                } else {
+                    this.linksRef.child('/users/' + userID).remove();
+                    firebase.database().ref('userPermissions/' + userID + '/permissions/' + this.state.folderID).remove();
+                }
+            });
+    }
+
     addBookmark(bookmark) {
-        firebase.database().ref('folders/' + this.state.folderID + '/links').push(bookmark);
+        this.linksRef.child('/links').push(bookmark);
     }
 
     deleteBookmark(bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
-    }
-
-    updateSearchVal(event) {
-        this.setState({ searchValue: event.target.value });
-        this.curFolder = firebase.database().ref('folders/' + this.props.match.params.folderID);
-        // Checks that we're in the right folder (to be modified once bookmarks can be added)
-        this.curFolder.on('value', (snapshot) => {
-            this.setState({ links: snapshot.val() });
-        });
     }
 
     render() {
@@ -129,7 +137,7 @@ export default class Folder extends Component {
                     user={this.props.user}
                 />
 
-                <LinkList links={this.state.folder.links} 
+                <LinkList links={this.state.folder.links}
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
                     deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
                     toggleDeleteModal={() => this.toggleModal('deleteLink')}
@@ -142,8 +150,10 @@ export default class Folder extends Component {
                     messages={this.state.messages}
                     toggleCallback={() => this.toggleModal('share')}
                     togglePublicCallback={() => this.togglePublic()}
+                    inviteUserCallback={(e, m) => this.shareFolder(e, m)}
                     folder={this.state.folder}
                     folderID={this.state.folderID}
+                    error={this.state.shareError}
                 />
 
                 <DeleteModal

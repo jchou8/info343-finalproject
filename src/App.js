@@ -21,31 +21,59 @@ class App extends Component {
     this.state = {
       loading: true,
       navActive: false,
-      folders: {}
+      folders: {},
+      permissions: {}
     };
+  }
+
+  filterFoldersByPermissions() {
+    let folders = this.state.folders;
+    let perms = this.state.permissions;
+    let filteredFolders = {};
+    if (perms) {
+      let folderKeys = Object.keys(folders);
+
+      folderKeys.forEach((key) => {
+        let perm = perms[key];
+        if (perm) {
+          if (perm === 'owner' || perm === 'view' || perm === 'edit') {
+            filteredFolders = Object.assign(filteredFolders, { [key]: folders[key] });
+          }
+        }
+      });
+    }
+
+    this.setState({ folders: filteredFolders, loading: false });
   }
 
   componentDidMount() {
     // Update state when user logs in/out
     this.authUnRegFunc = firebase.auth().onAuthStateChanged((user) => {
-      this.setState({ loading: false, error: null });
       if (user) {
         this.setState({ user: user });
-      } else {
-        this.setState({ user: null });
-      }
-    });
 
-    // Get list of folders from db
-    this.foldersRef = firebase.database().ref('folders');
-    this.foldersRef.on('value', (snapshot) => {
-      this.setState({ folders: snapshot.val() });
+        // Get user permissions
+        this.permsRef = firebase.database().ref('userPermissions/' + user.uid + '/permissions');
+        this.permsRef.on('value', (snapshot) => {
+          this.setState({ permissions: snapshot.val() }, () => this.filterFoldersByPermissions());
+        });
+
+        // Get list of folders from db
+        this.foldersRef = firebase.database().ref('folders');
+        this.foldersRef.on('value', (snapshot) => {
+          this.setState({ folders: snapshot.val() }, () => this.filterFoldersByPermissions());
+        });
+
+      } else {
+        this.setState({ user: null, folders: null, permissions: null });
+      }
     });
   }
 
   componentWillUnmount() {
     this.authUnRegFunc();
     this.foldersRef.off();
+    this.permsRef.off();
   }
 
   // Toggle the sidebar
@@ -82,6 +110,7 @@ class App extends Component {
 
     return firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((user) => {
+        firebase.database().ref('emailToUID/' + email.replace('.', ',')).set(user.uid);
         return user.updateProfile({
           displayName: username,
           photoURL: 'https://www.gravatar.com/avatar/' + md5(email) // Grab Gravatar
@@ -129,6 +158,8 @@ class App extends Component {
     />;
     let renderHomePage = (props) => <HomePage {...props}
       user={this.state.user}
+      folders={this.state.folders}
+      createFolderCallback={(folder) => this.createFolder(folder)}
     />;
     let renderLogin = (props) => <LoginPage {...props}
       loginCallback={(email, pw) => this.handleSignIn(email, pw)}
