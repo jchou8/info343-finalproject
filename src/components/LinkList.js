@@ -163,6 +163,7 @@ export default class LinkList extends Component {
   }
 
   render() {
+    console.log(this.props);
     // Changes the display of create folder
     let createBookmark = "";
     if (!this.state.createActive) {
