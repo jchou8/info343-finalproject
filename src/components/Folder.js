@@ -122,6 +122,14 @@ export default class Folder extends Component {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
     }
 
+    sortByDate() {
+       
+    }
+
+    sortByName() {
+       
+    }
+
     render() {
         let content = null;
         if (this.state.loading) {
@@ -142,6 +150,8 @@ export default class Folder extends Component {
                     deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
                     toggleDeleteModal={() => this.toggleModal('deleteLink')}
                     toggleModal={() => this.toggleModal('')}
+                    sortByDateCallBack={() => this.sortByDate()}
+                    sortByNameCallBack={() => this.sortByName()}
                     modal={this.state.modal}
                 />
 
@@ -174,7 +184,7 @@ export default class Folder extends Component {
         } else {
             return <Alert color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
         }
-
+        
         return content;
     }
 }
