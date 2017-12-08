@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
-import firebase from 'firebase/app';
 
 import './styles/Navigation.css';
 

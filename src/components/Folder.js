@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert, Button, Input, InputGroup } from 'reactstrap';
+import { Alert } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
 import firebase from 'firebase/app';

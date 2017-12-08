@@ -16,6 +16,10 @@
     float: right;
 }
 
-.link-table {
-    width: 100%;
+.td {
+    overflow: hidden;
+}
+
+.linklist-controls {
+    margin-bottom: 1rem;
 }

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { InputGroup, Table, Button, Row, Form, FormGroup, Input, Label } from 'reactstrap';
+import { InputGroup, Table, Collapse, Button, Row, Form, FormGroup, Input, InputGroupAddon, Label } from 'reactstrap';
 import firebase from 'firebase/app';
 import Bookmark from "./Bookmark.js";
 import TableHeader from "./TableHeader.js";
+import CreateBookmark from "./CreateBookmark.js";
 
 export default class LinkList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       createActive: false,
-      bookmarkName: '',
-      bookmarkURL: '',
       searchValue: '',
       sortCol: 'Date',
-      sortDir: 'desc',
+      sortDir: 'asc',
 
       bookmarks: []
     };
@@ -45,21 +44,14 @@ export default class LinkList extends Component {
     this.setState({ createActive: !this.state.createActive });
   }
 
-  closeCreateBookmark() {
-    this.setState({
-      createActive: false
-    });
-  }
-
-  createNewBookmark() {
+  createNewBookmark(name, url) {
     let newBookmark = {
       Date: firebase.database.ServerValue.TIMESTAMP,
-      Name: this.state.bookmarkName,
-      URL: this.state.bookmarkURL
+      Name: name,
+      URL: url
     }
 
     this.props.addBookmarkCallback(newBookmark);
-    this.setState({ bookmarkName: '', bookmarkURL: '' });
   }
 
   // Sort data based on column
@@ -115,47 +107,6 @@ export default class LinkList extends Component {
   }
 
   render() {
-    // Changes the display of create folder
-    let createBookmark = null;
-    if (!this.state.createActive) {
-      createBookmark = (<div className="col-xs-12 col-sm-4" onClick={() => this.toggleCreateBookmark()}><i className='fa fa-plus' aria-hidden='true'></i> Add Bookmark</div>);
-    } else {
-      createBookmark = (
-        <div className="col-xs-12 col-sm-4">
-          <div onClick={() => this.closeCreateBookmark()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
-          <Form>
-            <FormGroup>
-              <InputGroup>
-                <Label for='bookmarkName'>Name:</Label>
-                <Input
-                  type='text'
-                  name="bookmarkName"
-                  id='bookmarkName'
-                  onChange={(e) => this.handleChange(e)}
-                  placeholder='Enter custom name...'
-                  value={this.state.bookmarkName}
-                />
-              </InputGroup>
-            </FormGroup>
-            <FormGroup>
-              <InputGroup>
-                <Label for='bookmarkURL'>URL:</Label>
-                <Input
-                  type='text'
-                  name="bookmarkURL"
-                  id='bookmarkURL'
-                  onChange={(e) => this.handleChange(e)}
-                  placeholder='Enter URL...'
-                  value={this.state.bookmarkURL}
-                />
-              </InputGroup>
-            </FormGroup>
-            <Button onClick={() => this.createNewBookmark()} disabled={(this.state.bookmarkName.length === 0) && (this.state.bookmarkURL.length === 0)} color="primary"><i className='fa fa-plus' aria-hidden='true'></i> Add Bookmark</Button>
-          </Form>
-        </div>
-      );
-    }
-
     let bookmarks = [];
     if (this.state.bookmarks) {
       this.state.bookmarks.forEach((bookmark) => {
@@ -169,8 +120,8 @@ export default class LinkList extends Component {
 
         // Filter to search
         if (!this.state.searchValue || this.state.searchValue.length === 0 ||
-          (this.state.searchValue && bookmark.Name.indexOf(this.state.searchValue) !== -1) ||
-          (this.state.searchValue && bookmark.URL.indexOf(this.state.searchValue) !== -1)) {
+          (this.state.searchValue && bookmark.Name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1) ||
+          (this.state.searchValue && bookmark.URL.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) !== -1)) {
           bookmarks.push(bookmarkObj);
         }
       });
@@ -178,18 +129,24 @@ export default class LinkList extends Component {
 
     return (
       <div>
-        <Row className='ml-2'>
-          {createBookmark}
-          <div className='col-xs-12 col-sm-4'>
+        <Row className='ml-2 linklist-controls'>
+          <CreateBookmark
+            open={this.state.createActive}
+            createBookmarkCallback={(name, url) => this.createNewBookmark(name, url)}
+            toggleCreateBookmark={() => this.toggleCreateBookmark()}
+          />
+          <div className='col-xs-12 col-sm-6 search-bar'>
             <InputGroup>
+              <InputGroupAddon aria-hidden='true'><i className='fa fa-search'></i></InputGroupAddon>
               <Input type="text" name="searchValue" id="searchValue" onChange={(e) => this.handleChange(e)} placeholder='Search bookmarks...' />
             </InputGroup>
           </div>
         </Row>
-        <Table className='mt-2 table-responsive link-table'>
+        <Table hover responsive className='table' size='sm'>
           {bookmarks &&
             <TableHeader
               cols={['Name', 'URL', 'Date']}
+              colWidths={[5, 5, 2]}
               sortCallback={(col) => { this.sortLinks(col) }}
               sortCol={this.state.sortCol}
               sortDir={this.state.sortDir}
