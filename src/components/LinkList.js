@@ -90,7 +90,9 @@ export default class LinkList extends Component {
         let bookmarkObj = (
           <Bookmark
             key={id}
+            id={id}
             bookmark={bookmark}
+            deleteBookmarkCallback={(bookmarkId) => this.props.deleteBookmarkCallback(bookmarkId)}
           />);
         
         // Add filtering here

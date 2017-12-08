@@ -118,6 +118,10 @@ export default class Folder extends Component {
         this.linksRef.child('/links').push(bookmark);
     }
 
+    deleteBookmark(bookmarkId) {
+        console.log(bookmarkId);
+    }
+
     render() {
         let content = null;
         if (this.state.loading) {
@@ -135,6 +139,7 @@ export default class Folder extends Component {
 
                 <LinkList links={this.state.folder.links}
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
+                    deleteBookmarkCallback={(bookmarkId) => this.deleteBookmark(bookmarkId)}
                 />
 
                 <ShareFolderModal
