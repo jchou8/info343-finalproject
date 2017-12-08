@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Alert, Input, Label, Form, FormGroup, InputGroup, InputGroupButton, Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Table, Alert, Input, Label, Form, FormGroup, InputGroup, InputGroupButton, Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+
+import firebase from 'firebase/app';
 
 // Modal that allows the user to share a folder with other users
 export default class ShareFolderModal extends Component {
@@ -9,8 +10,38 @@ export default class ShareFolderModal extends Component {
         this.state = {
             email: '',
             dropdownOpen: false,
-            shareMode: 'view'
+            shareMode: 'view',
+
+            userList: []
         };
+    }
+
+    componentDidMount() {
+        this.updateUsers(this.props.folder.users);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.updateUsers(nextProps.folder.users);
+    }
+
+    updateUsers(users) {
+        this.setState({ userList: [] });
+        if (users) {
+            Object.keys(users).forEach((id) => {
+                firebase.database().ref('userPermissions/' + id + '/userName').once('value')
+                    .then((snapshot) => {
+                        let displayName = snapshot.val();
+                        let curUsers = this.state.userList;
+                        this.setState({
+                            userList: curUsers.concat({
+                                id: id,
+                                name: displayName,
+                                perm: users[id]
+                            })
+                        });
+                    })
+            });
+        }
     }
 
     // Toggle dropdown
@@ -29,7 +60,7 @@ export default class ShareFolderModal extends Component {
 
     // Set sharing mode
     setShareMode(type) {
-        this.setState({shareMode: type});
+        this.setState({ shareMode: type });
     }
 
     // Share the folder
@@ -41,10 +72,33 @@ export default class ShareFolderModal extends Component {
     render() {
         let isPublic = this.props.folder.public;
 
-        let users = this.props.folder.users;
+        let users = null;
+        if (this.state.userList) {
+            users = this.state.userList.map((user) => {
+                let permDisplay = (<span>
+                    <i className={'fa fa-' + (user.perm === 'edit' ? 'pencil' : 'eye')} aria-hidden='true'></i>{' '}
+                    Can <strong>{user.perm}</strong>
+                </span>)
+
+                return (<tr key={user.id}>
+                    <td>
+                        {user.name}
+                    </td>
+                    <td>
+                        {permDisplay}
+                    </td>
+                    <td>
+                        <Button size='sm' color='link' title='Remove user'
+                        onClick={() => this.props.removeUserCallback(user.id)}>
+                            <i className="fa fa-remove" aria-label='Remove user'></i>
+                        </Button>
+                    </td>
+                </tr>);
+            });
+        }
 
         return (
-            <Modal isOpen={this.props.open} toggle={this.props.toggleCallback}>
+            <Modal isOpen={this.props.open} toggle={this.props.toggleCallback} >
                 <ModalHeader toggle={this.props.toggleCallback}>
                     Share folder
                 </ModalHeader>
@@ -81,11 +135,18 @@ export default class ShareFolderModal extends Component {
                                 <InputGroupButton>
                                     <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
                                         <DropdownToggle caret color='secondary'>
+                                            <i className={'fa fa-' + (this.state.shareMode === 'edit' ? 'pencil' : 'eye')} aria-hidden='true'></i>{' '}
                                             Can <strong>{this.state.shareMode}</strong>
                                         </DropdownToggle>
                                         <DropdownMenu>
-                                            <DropdownItem onClick={() => this.setShareMode('view')}>Can <strong>view</strong></DropdownItem>
-                                            <DropdownItem onClick={() => this.setShareMode('edit')}>Can <strong>edit</strong></DropdownItem>
+                                            <DropdownItem onClick={() => this.setShareMode('view')}>
+                                                <i className='fa fa-eye' aria-hidden='true'></i>{' '}
+                                                Can <strong>view</strong>
+                                            </DropdownItem>
+                                            <DropdownItem onClick={() => this.setShareMode('edit')}>
+                                                <i className='fa fa-pencil' aria-hidden='true'></i>{' '}
+                                                Can <strong>edit</strong>
+                                            </DropdownItem>
                                         </DropdownMenu>
                                     </ButtonDropdown>
                                 </InputGroupButton>
@@ -100,7 +161,14 @@ export default class ShareFolderModal extends Component {
                         </FormGroup>
                     </Form>
 
-                    <h4>Current users</h4>
+                    {users && <div>
+                        <h4>Current users</h4>
+                        <Table hover responsive>
+                            <tbody>
+                                {users}
+                            </tbody>
+                        </Table>
+                    </div>}
 
                 </ModalBody>
                 <ModalFooter>

@@ -30,7 +30,7 @@ class App extends Component {
     let folders = this.state.folders;
     let perms = this.state.permissions;
     let filteredFolders = {};
-    if (perms) {
+    if (perms && folders) {
       let folderKeys = Object.keys(folders);
 
       folderKeys.forEach((key) => {
@@ -187,18 +187,19 @@ class App extends Component {
             <main>
               {this.state.error && <Alert color='danger' aria-live='polite'>{this.state.error}</Alert>}
               {this.state.loading && <Spinner name='circle' color='steelblue' fadeIn='none' aria-label='Loading...' />}
-
-              <Switch>
-                <Route exact path='/' render={renderHomePage} />
-                <Route path='/register' render={renderRegister} />
-                <Route path='/login' render={renderLogin} />
-                <Route path='/bookmarks/:folderID' render={renderFolder} />
-              </Switch>
+              {!this.state.loading &&
+                <Switch>
+                  <Route exact path='/' render={renderHomePage} />
+                  <Route path='/register' render={renderRegister} />
+                  <Route path='/login' render={renderLogin} />
+                  <Route path='/bookmarks/:folderID' render={renderFolder} />
+                </Switch>
+              }
             </main>
           </div>
+          </div>
         </div>
-      </div>
-    );
+        );
   }
 }
 

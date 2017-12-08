@@ -32,6 +32,12 @@ export default class Folder extends Component {
         this.linksRef.on('value', (snapshot) => {
             this.setState({ folder: snapshot.val(), folderID: folderID, loading: false });
         });
+
+        firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + folderID).once('value')
+            .then((snapshot) => {
+                let perm = snapshot.val();
+                this.setState({perm: perm});
+            });
     }
 
     componentDidMount() {
@@ -114,6 +120,11 @@ export default class Folder extends Component {
             });
     }
 
+    unshareFolder(uid) {
+        this.linksRef.child('/users/' + uid).remove();
+        firebase.database().ref('userPermissions/' + uid + '/permissions/' + this.state.folderID).remove();
+    }
+
     addBookmark(bookmark) {
         this.linksRef.child('/links').push(bookmark);
     }
@@ -147,6 +158,7 @@ export default class Folder extends Component {
                     deleteBookmarkCallback={(bookmark) => this.confirmDeleteBookmark(bookmark)}
                     toggleDeleteModal={() => this.toggleModal('deleteLink')}
                     modal={this.state.modal}
+                    permission={this.state.perm}
                 />
 
                 <ShareFolderModal
@@ -155,6 +167,7 @@ export default class Folder extends Component {
                     toggleCallback={() => this.toggleModal('share')}
                     togglePublicCallback={() => this.togglePublic()}
                     inviteUserCallback={(e, m) => this.shareFolder(e, m)}
+                    removeUserCallback={(id) => this.unshareFolder(id)}
                     folder={this.state.folder}
                     folderID={this.state.folderID}
                     error={this.state.shareError}

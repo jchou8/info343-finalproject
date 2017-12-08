@@ -107,7 +107,9 @@ export default class LinkList extends Component {
   }
 
   render() {
+    let canEdit = this.props.permission === 'owner' || this.props.permission === 'edit';
     let bookmarks = [];
+    
     if (this.state.bookmarks) {
       this.state.bookmarks.forEach((bookmark) => {
         let bookmarkObj = (<Bookmark
@@ -116,6 +118,7 @@ export default class LinkList extends Component {
           deleteBookmarkCallback={(bookmark) => this.props.deleteBookmarkCallback(bookmark)}
           toggleDeleteModal={this.props.toggleDeleteModal}
           modal={this.props.modal}
+          permission={this.props.permission}
         />);
 
         // Filter to search
@@ -130,11 +133,11 @@ export default class LinkList extends Component {
     return (
       <div>
         <Row className='ml-2 linklist-controls'>
-          <CreateBookmark
+          {canEdit && <CreateBookmark
             open={this.state.createActive}
             createBookmarkCallback={(name, url) => this.createNewBookmark(name, url)}
             toggleCreateBookmark={() => this.toggleCreateBookmark()}
-          />
+          />}
           <div className='col-xs-12 col-sm-6 search-bar'>
             <InputGroup>
               <InputGroupAddon aria-hidden='true'><i className='fa fa-search'></i></InputGroupAddon>

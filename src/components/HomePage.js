@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardTitle, CardSubtitle, Button, Row, Col, Alert } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import './styles/HomePage.css';
 
 export default class HomePage extends Component {
-    render() {
-        let folders = this.props.folders;
+    constructor(props) {
+        super(props);
+        this.state = {
+            folders: [],
+            sharedFolders: []
+        };
+    }
+
+    componentDidMount() {
+        this.createCards(this.props.folders);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.createCards(nextProps.folders);
+    }
+
+    createCards(folders) {
         let folderIDs = [];
         if (folders) {
             folderIDs = Object.keys(folders);
@@ -54,7 +69,14 @@ export default class HomePage extends Component {
             }
         });
 
+        this.setState({folderList: folderList, sharedFolderList: sharedFolderList})
+    }
+
+    render() {
         let content = null;
+        let folderList = this.state.folderList;
+        let shared = this.state.sharedFolderList;
+
         if (this.props.user) {
             content = (
                 <div>
@@ -63,27 +85,29 @@ export default class HomePage extends Component {
                     <div className='folder-card-group'>
                         <h3>Your folders</h3>
 
-                        {folderList.length > 0 &&
+                        {folderList && folderList.length > 0 &&
                             <Row>
                                 {folderList}
                             </Row>
                         }
 
-                        {folderList.length === 0 &&
+                        {folderList && folderList.length === 0 &&
                             <Alert color='warning' aria-live='polite'>You have not made any folders yet!</Alert>
                         }
                     </div>
 
-                    {sharedFolderList.length > 0 &&
+                    {shared && shared.length > 0 &&
                         <div className='folder-card-group'>
                             <h3>Folders shared with you</h3>
                             <Row>
-                                {sharedFolderList}
+                                {shared}
                             </Row>
                         </div>
                     }
                 </div>
             );
+        } else {
+            content = <Redirect to='/login' />;
         }
 
         return content;
