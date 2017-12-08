@@ -38,7 +38,7 @@ class Navigation extends Component {
             public: false,
             users: {}
         }
-        
+
         this.props.createFolderCallback(folder);
         this.setState({ folderName: '' });
         this.closeCreateFolder();
@@ -57,18 +57,23 @@ class Navigation extends Component {
             folderIDs = Object.keys(folders);
         }
 
-        // Build list of links to channels
-        let folderList = folderIDs.map((id) => {
-            let folder = folders[id];
-            if (user.uid === folder.ownerID || (folder.users && folder.users.hasOwnProperty(user.uid))) {
+        // Build list of links to owned folders
+        let folderList = [];
+        let sharedFolderList = [];
 
-                return (
-                    <li key={id} className='sidebar-folder'>
-                        <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
-                            <div><i className='fa fa-folder' aria-hidden='true'></i>{' ' + folder.name}</div>
-                        </NavLink>
-                    </li>
-                );
+        folderIDs.forEach((id) => {
+            let folder = folders[id];
+            let folderObj = (
+                <li key={id} className='sidebar-folder'>
+                    <NavLink to={'/bookmarks/' + id} className='sidebar-link' activeClassName='active-folder' onClick={this.props.closeCallback}>
+                        <div><i className='fa fa-folder' aria-hidden='true'></i>{' ' + folder.name}</div>
+                    </NavLink>
+                </li>);
+
+            if (user.uid === folder.ownerID) {
+                folderList.push(folderObj);
+            } else {
+                sharedFolderList.push(folderObj);
             }
         });
 
@@ -90,7 +95,7 @@ class Navigation extends Component {
                     {/* <div onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</div> */}
                     <Button
                         color="primary"
-                        disabled={this.state.folderName.length === 0}
+                        disabled={this.state.folderName.length === 0 || this.state.folderName.length > 30}
                         onClick={(e) => this.createFolder(e)}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</Button>
                 </div>
             );
@@ -105,6 +110,15 @@ class Navigation extends Component {
                     </li>
                     {folderList}
                 </ul>
+
+                {sharedFolderList.length > 0 &&
+                    <div>
+                        <h2>Shared with you</h2>
+                        <ul className='list-unstyled'>
+                            {sharedFolderList}
+                        </ul>
+                    </div>
+                }
             </div>
         );
     }

@@ -13,17 +13,17 @@ export default class FolderHeader extends Component {
                 </h2>
 
                 {isOwner && <div className='header-buttons text-right'>
-                    <Button color='primary' outline title='Share folder'><i className='fa fa-link' aria-label='Share folder'
-                        onClick={this.props.toggleShareModal}
-                    ></i></Button>
+                    <Button color='primary' outline title='Share folder' 
+                        onClick={this.props.toggleShareModal}>
+                        <i className='fa fa-link' aria-label='Share folder'></i>
+                        </Button>
                     {' '}
                     <Button color='secondary' outline title='Rename folder'
                         onClick={this.props.toggleEditModal}
                     ><i className='fa fa-pencil' aria-label='Rename folder'></i></Button>
                     {' '}
-                    <Button color='danger' outline title='Delete folder'><i className='fa fa-trash' aria-label='Delete folder'
-                        onClick={this.props.toggleDeleteModal}
-                    ></i></Button>
+                    <Button color='danger' outline title='Delete folder' onClick={this.props.toggleDeleteModal}>
+                    <i className='fa fa-trash' aria-label='Delete folder'></i></Button>
                 </div>
                 }
             </div>
