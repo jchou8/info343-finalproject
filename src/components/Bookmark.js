@@ -8,8 +8,8 @@ export default class Bookmark extends Component {
     //todo: needs a handleDelete() callback to linkedlist on the FA icon
     return (
       <tr>
-        <td><a href={bookmark.URL} target="_blank">{bookmark.Name}</a></td>
-        <td><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
+        <td className='bookmark-name'><a href={bookmark.URL} target="_blank">{bookmark.Name}</a></td>
+        <td className='text-left'><a href={bookmark.URL} target="_blank">{bookmark.URL}</a></td>
         <td><Time value={bookmark.Date} relative /></td>
         <td>
           <ButtonGroup>

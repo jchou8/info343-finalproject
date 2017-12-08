@@ -16,10 +16,17 @@
     float: right;
 }
 
-.td {
-    overflow: hidden;
-}
-
 .linklist-controls {
     margin-bottom: 1rem;
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 250px;
+}
+
+.bookmark-name {
+    font-weight: 600;
 }
