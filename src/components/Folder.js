@@ -135,8 +135,8 @@ export default class Folder extends Component {
         this.linksRef.child('/links').push(bookmark);
     }
 
-    confirmDeleteBookmark(bookmark) {
-        this.setState({ bookmarkToModify: bookmark }, () => this.toggleModal('deleteLink'));
+    confirmModifyBookmark(bookmark, action) {
+        this.setState({ bookmarkToModify: bookmark }, () => this.toggleModal(action + 'Link'));
     }
 
     deleteBookmark(bookmarkId) {
@@ -161,7 +161,9 @@ export default class Folder extends Component {
 
                 <LinkList links={this.state.folder.links}
                     addBookmarkCallback={(bookmark) => this.addBookmark(bookmark)}
-                    deleteBookmarkCallback={(bookmark) => this.confirmDeleteBookmark(bookmark)}
+                    deleteBookmarkCallback={(bookmark) => this.confirmModifyBookmark(bookmark, 'delete')}
+                    editBookmarkCallback={(bookmark) => this.confirmModifyBookmark(bookmark, 'edit')}
+                    moveBookmarkCallback={(bookmark) => this.confirmModifyBookmark(bookmark, 'move')}
                     toggleDeleteModal={() => this.toggleModal('deleteLink')}
                     modal={this.state.modal}
                     permission={this.state.perm}

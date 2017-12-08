@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { InputGroup, Table, Collapse, Button, Row, Form, FormGroup, Input, InputGroupAddon, Label } from 'reactstrap';
+import { Alert, InputGroup, Table, Collapse, Button, Row, Form, FormGroup, Input, InputGroupAddon, Label } from 'reactstrap';
 import firebase from 'firebase/app';
 import Bookmark from "./Bookmark.js";
 import TableHeader from "./TableHeader.js";
@@ -109,13 +109,15 @@ export default class LinkList extends Component {
   render() {
     let canEdit = this.props.permission === 'owner' || this.props.permission === 'edit';
     let bookmarks = [];
-    
+
     if (this.state.bookmarks) {
       this.state.bookmarks.forEach((bookmark) => {
         let bookmarkObj = (<Bookmark
           key={bookmark.id}
           bookmark={bookmark}
           deleteBookmarkCallback={(bookmark) => this.props.deleteBookmarkCallback(bookmark)}
+          editBookmarkCallback={(bookmark) => this.props.moveBookmarkCallback(bookmark)}
+          moveBookmarkCallback={(bookmark) => this.props.editBookmarkCallback(bookmark)}
           toggleDeleteModal={this.props.toggleDeleteModal}
           modal={this.props.modal}
           canEdit={canEdit}
@@ -145,8 +147,8 @@ export default class LinkList extends Component {
             </InputGroup>
           </div>
         </Row>
-        <Table hover responsive className='table' size='sm'>
-          {bookmarks &&
+        {bookmarks && bookmarks.length !== 0 &&
+          <Table hover responsive className='table' size='sm'>
             <TableHeader
               cols={['Name', 'URL', 'Date']}
               colWidths={[5, 5, 2]}
@@ -154,11 +156,17 @@ export default class LinkList extends Component {
               sortCol={this.state.sortCol}
               sortDir={this.state.sortDir}
             />
-          }
+            }
           <tbody>
-            {bookmarks}
-          </tbody>
-        </Table>
+              {bookmarks}
+            </tbody>
+          </Table>
+        }
+
+        {(!bookmarks || bookmarks.length === 0) && 
+          <Alert color='warning'>No bookmarks have been added to this folder yet!</Alert>
+        }
+
       </div>
     );
   }
