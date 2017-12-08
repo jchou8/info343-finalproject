@@ -156,14 +156,13 @@ export default class LinkList extends Component {
               sortCol={this.state.sortCol}
               sortDir={this.state.sortDir}
             />
-            }
-          <tbody>
+            <tbody>
               {bookmarks}
             </tbody>
           </Table>
         }
 
-        {(!bookmarks || bookmarks.length === 0) && 
+        {(!bookmarks || bookmarks.length === 0) &&
           <Alert color='warning'>No bookmarks have been added to this folder yet!</Alert>
         }
 
