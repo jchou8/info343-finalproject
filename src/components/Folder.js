@@ -10,6 +10,8 @@ import LinkList from './LinkList';
 import ShareFolderModal from './ShareFolderModal';
 import DeleteModal from './DeleteModal';
 import EditFolderModal from './EditFolderModal';
+import EditLinkModal from './EditLinkModal';
+import MoveLinkModal from './MoveLinkModal';
 
 import './styles/Folder.css';
 
@@ -35,10 +37,10 @@ export default class Folder extends Component {
 
         if (this.props.user) {
             firebase.database().ref('userPermissions/' + this.props.user.uid + '/permissions/' + folderID).once('value')
-            .then((snapshot) => {
-                let perm = snapshot.val();
-                this.setState({perm: perm});
-            });
+                .then((snapshot) => {
+                    let perm = snapshot.val();
+                    this.setState({ perm: perm });
+                });
         }
     }
 
@@ -144,6 +146,13 @@ export default class Folder extends Component {
         this.setState({ bookmarkToModify: null });
     }
 
+    editBookmark(newName, newURL, bookmarkId) {
+        firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).set(
+            Object.assign(this.state.bookmarkToModify, {Name: newName, URL: newURL})
+        );
+        this.setState({ bookmarkToModify: null });
+    }
+
     render() {
         let canAccess = this.props.user && (this.state.perm === 'owner' || this.state.perm === 'edit' || this.state.perm === 'view');
         let content = null;
@@ -204,6 +213,22 @@ export default class Folder extends Component {
                         deleteCallback={() => this.deleteBookmark(this.state.bookmarkToModify.id)}
                         type='link'
                         name={this.state.bookmarkToModify.Name}
+                    />}
+
+                {this.state.bookmarkToModify &&
+                    <EditLinkModal
+                        open={this.state.modal === 'editLink'}
+                        toggleCallback={() => this.toggleModal('editLink')}
+                        editCallback={(name, url) => this.editBookmark(name, url, this.state.bookmarkToModify.id)}
+                        bookmark={this.state.bookmarkToModify}
+                    />}
+
+                {this.state.bookmarkToModify &&
+                    <MoveLinkModal
+                        open={this.state.modal === 'moveLink'}
+                        toggleCallback={() => this.toggleModal('moveLink')}
+                        moveCallback={() => this.moveBookmark(this.state.bookmarkToModify.id)}
+                        bookmark={this.state.bookmarkToModify}
                     />}
             </div>);
         } else {

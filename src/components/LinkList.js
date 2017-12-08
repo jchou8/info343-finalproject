@@ -116,8 +116,8 @@ export default class LinkList extends Component {
           key={bookmark.id}
           bookmark={bookmark}
           deleteBookmarkCallback={(bookmark) => this.props.deleteBookmarkCallback(bookmark)}
-          editBookmarkCallback={(bookmark) => this.props.moveBookmarkCallback(bookmark)}
-          moveBookmarkCallback={(bookmark) => this.props.editBookmarkCallback(bookmark)}
+          editBookmarkCallback={(bookmark) => this.props.editBookmarkCallback(bookmark)}
+          moveBookmarkCallback={(bookmark) => this.props.moveBookmarkCallback(bookmark)}
           toggleDeleteModal={this.props.toggleDeleteModal}
           modal={this.props.modal}
           canEdit={canEdit}
