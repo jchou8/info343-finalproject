@@ -25,6 +25,7 @@ export default class ShareFolderModal extends Component {
         this.updateUsers(nextProps.folder.users);
     }
 
+    // Update the list of users that has access to this folder
     updateUsers(users) {
         this.setState({ userList: {} });
         if (users) {
@@ -67,6 +68,7 @@ export default class ShareFolderModal extends Component {
     render() {
         let isPublic = this.props.folder.public;
 
+        // Build list of users to display
         let users = [];
         if (this.state.userList) {
             let userIDs = Object.keys(this.state.userList)

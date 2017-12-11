@@ -14,6 +14,7 @@ import Folder from './components/Folder.js';
 
 import './App.css';
 
+// Contains the overall app
 class App extends Component {
 
   constructor(props) {
@@ -26,6 +27,7 @@ class App extends Component {
     };
   }
 
+  // Filter the list of folders down to what the user has permission to view
   filterFoldersByPermissions() {
     let folders = this.state.folders;
     let perms = this.state.permissions;
@@ -35,14 +37,13 @@ class App extends Component {
 
       folderKeys.forEach((key) => {
         let perm = perms[key];
-        if (perm) {
-          if (perm === 'owner' || perm === 'view' || perm === 'edit') {
-            filteredFolders = Object.assign(filteredFolders, { [key]: folders[key] });
-          }
+        if (perm === 'owner' || perm === 'view' || perm === 'edit') {
+          filteredFolders = Object.assign(filteredFolders, { [key]: folders[key] });
         }
       });
     }
-
+    console.log(perms);
+    console.log(filteredFolders);
     this.setState({ folders: filteredFolders, loading: false });
   }
 
@@ -144,10 +145,14 @@ class App extends Component {
       });
   }
 
-  //
+  // Make a folder
   createFolder(folder) {
     let key = this.foldersRef.push(folder).key;
+
+    // Send user to new folder
     this.props.history.push('/bookmarks/' + key);
+
+    // Update user permissions
     firebase.database().ref('userPermissions/' + this.state.user.uid + '/permissions/' + key).set('owner');
   }
 

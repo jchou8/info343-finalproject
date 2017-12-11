@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 
+// Header bar for a folder, displaying folder info and buttons to modify the folder
 export default class FolderHeader extends Component {
     render() {
         let folder = this.props.folder;

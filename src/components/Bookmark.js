@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import Time from 'react-time';
 
+// Displays one bookmark as a table row
 export default class Bookmark extends Component {
   render() {
     let bookmark = this.props.bookmark;

@@ -5,6 +5,7 @@ import Bookmark from "./Bookmark.js";
 import TableHeader from "./TableHeader.js";
 import CreateBookmark from "./CreateBookmark.js";
 
+// Displays a table with a list of bookmarks
 export default class LinkList extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +27,7 @@ export default class LinkList extends Component {
     this.updateStateLinks(nextProps.links);
   }
 
+  // Update list of links to display
   updateStateLinks(links) {
     let bookmarks = [];
     if (links) {
@@ -34,16 +36,19 @@ export default class LinkList extends Component {
     this.setState({ bookmarks: bookmarks }, () => this.sortLinks(this.state.sortCol, true))
   }
 
+  // Update state to reflect text inputs
   handleChange(event) {
     let newState = {};
     newState[event.target.name] = event.target.value;
     this.setState(newState);
   }
 
+  // Toggle menu to create bookmarks
   toggleCreateBookmark() {
     this.setState({ createActive: !this.state.createActive });
   }
 
+  // Add a new bookmark
   createNewBookmark(name, url) {
     let newBookmark = {
       Date: firebase.database.ServerValue.TIMESTAMP,
@@ -77,10 +82,12 @@ export default class LinkList extends Component {
     this.setState(newState);
   }
 
+  // Sort by date
   sortByDate(a, b, reverse) {
     return (b.Date - a.Date) * reverse;
   }
 
+  // Sort by name, break ties with date
   sortByName(a, b, reverse) {
     let diff = 0;
     if (a.Name < b.Name) {
@@ -93,11 +100,15 @@ export default class LinkList extends Component {
     return diff * reverse;
   }
 
+  // Sort by url, break ties with name
   sortByURL(a, b, reverse) {
+    // Remove protocol from URLs
+    let URLa = a.URL.replace(/(^\w+:|^)\/\//, '');
+    let URLb = b.URL.replace(/(^\w+:|^)\/\//, '');
     let diff = 0;
-    if (a.URL < b.URL) {
+    if (URLa < URLb) {
       diff = -1;
-    } else if (a.URL > b.URL) {
+    } else if (URLa > URLb) {
       diff = 1;
     } else {
       diff = (a, b, reverse) => this.sortByName(a, b, -reverse);
@@ -110,6 +121,7 @@ export default class LinkList extends Component {
     let canEdit = this.props.permission === 'owner' || this.props.permission === 'edit';
     let bookmarks = [];
 
+    // Build list of bookmarks to render
     if (this.state.bookmarks) {
       this.state.bookmarks.forEach((bookmark) => {
         let bookmarkObj = (<Bookmark

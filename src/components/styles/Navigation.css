@@ -30,7 +30,7 @@
     margin-left: -250px;
     transition: all 0.3s;
   
-    background-color: #4b636e;
+    background-color: #3d5a46;
     color: white;
 }
 
@@ -61,11 +61,11 @@
 
 /* sidebar links */
 .sidebar-login {
-    color: #7dbcff;
+    color: #7dffbe;
 }
 
 .sidebar-login:hover, .sidebar-login:active, .sidebar-login:focus {
-    color: #b5daff;
+    color: #b5ffe3;
 }
 
 .sidebar-folder {
@@ -84,7 +84,7 @@
 }
 
 .sidebar-folder div:hover, .sidebar-folder div:active, .sidebar-folder div:focus {
-    background-color: #2a3d46;
+    background-color: #2a4639;
     color: white;
 }
 
@@ -96,7 +96,7 @@
 }
 
 .active-folder div {
-    background-color: #6b818b;
+    background-color: #6b8b7b;
 }
 
 .folder-list {

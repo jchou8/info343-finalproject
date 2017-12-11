@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Collapse, Form, FormGroup, InputGroup, InputGroupAddon, Input } from 'reactstrap';
 
+// Collapsible form that allows the user to add a bookmark
 export default class Bookmark extends Component {
     constructor(props) {
         super(props);
@@ -10,12 +11,14 @@ export default class Bookmark extends Component {
         };
     }
 
+    // Update state to reflect inputs
     handleChange(event) {
         let newState = {};
         newState[event.target.name] = event.target.value;
         this.setState(newState);
     }
 
+    // Create a new bookmark
     createNewBookmark(event) {
         event.preventDefault();
         this.setState({ bookmarkName: '', bookmarkURL: '' });

@@ -15,6 +15,7 @@ import MoveLinkModal from './MoveLinkModal';
 
 import './styles/Folder.css';
 
+// Displays a folder, which includes a header and list of links
 export default class Folder extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +24,6 @@ export default class Folder extends Component {
             folderID: '',
             modal: '',
             loading: true,
-
             shareError: ''
         };
     }
@@ -63,15 +63,13 @@ export default class Folder extends Component {
         this.linksRef.off();
     }
 
+    // Toggle the modal with the given name
     toggleModal(modal) {
         let newModal = this.state.modal === modal ? '' : modal;
         this.setState({ modal: newModal });
-
-        if (newModal === '') {
-
-        }
     }
 
+    // Delete a folder
     deleteFolder() {
         this.setState({ loading: true });
 
@@ -86,13 +84,16 @@ export default class Folder extends Component {
             });
     }
 
+    // Toggle whether the folder is public via link
     togglePublic() {
         this.linksRef.update({
             public: !this.state.folder.public
         });
     }
 
+    // Edit the folder name
     editName(newName) {
+        // Don't do anything if name didn't actually change
         if (newName !== this.state.folder.name) {
             this.setState({ loading: true });
 
@@ -109,8 +110,11 @@ export default class Folder extends Component {
         }
     }
 
+    // Share a folder to user with the given email
     shareFolder(email, mode) {
         this.setState({ shareError: '' });
+        
+        // Grab user ID from email
         firebase.database().ref('emailToUID/' + email.replace('.', ',')).once('value')
             .then((snapshot) => {
                 let userID = snapshot.val();
@@ -128,24 +132,29 @@ export default class Folder extends Component {
             });
     }
 
+    // Unshare a folder with the user with the given ID
     unshareFolder(uid) {
         this.linksRef.child('/users/' + uid).remove();
         firebase.database().ref('userPermissions/' + uid + '/permissions/' + this.state.folderID).remove();
     }
 
+    // Add a bookmark to the folder
     addBookmark(bookmark) {
         this.linksRef.child('/links').push(bookmark);
     }
 
+    // Open a modal to modify the given bookmark
     confirmModifyBookmark(bookmark, action) {
         this.setState({ bookmarkToModify: bookmark }, () => this.toggleModal(action + 'Link'));
     }
 
+    // Delete a bookmark given its id
     deleteBookmark(bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
         this.setState({ bookmarkToModify: null });
     }
 
+    // Edit a bookmark with a new name and url
     editBookmark(newName, newURL, bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).set(
             Object.assign(this.state.bookmarkToModify, { Name: newName, URL: newURL })
@@ -153,6 +162,7 @@ export default class Folder extends Component {
         this.setState({ bookmarkToModify: null });
     }
 
+    // Move a bookmark to a different folder
     moveBookmark(newFolderID, bookmarkId) {
         firebase.database().ref('folders/' + this.state.folderID + '/links/' + bookmarkId).remove();
         firebase.database().ref('folders/' + newFolderID + '/links').push(this.state.bookmarkToModify);
