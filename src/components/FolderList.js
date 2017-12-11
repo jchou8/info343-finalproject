@@ -75,7 +75,7 @@ class FolderList extends Component {
         } else {
             createFolder = (
                 <div className='sidebar-link'>
-                    <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
+                    <div onClick={() => this.toggleCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
                     <div>Folder name: <Input
                         name="text"
                         value={this.state.folderName}
