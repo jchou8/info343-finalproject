@@ -11,7 +11,8 @@ export default class MoveLinkModal extends Component {
         });
     }
 
-    buildLinkList(folders, perms) {
+    // Create list of folders that can be moved to
+    buildFolderList(folders, perms) {
         let folderList = [];
         if (folders && perms) {
             Object.keys(folders).forEach((id) => {
@@ -27,11 +28,11 @@ export default class MoveLinkModal extends Component {
     }
 
     componentDidMount() {
-        this.buildLinkList(this.props.folders, this.props.folderPerms);
+        this.buildFolderList(this.props.folders, this.props.folderPerms);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.buildLinkList(nextProps.folders, nextProps.folderPerms);
+        this.buildFolderList(nextProps.folders, nextProps.folderPerms);
         this.setState({ folder: nextProps.curFolderID });
     }
 
@@ -40,7 +41,7 @@ export default class MoveLinkModal extends Component {
         this.setState({ folder: event.target.value });
     }
 
-    // Edit the link
+    // Move the bookmark
     handleMove(event) {
         event.preventDefault();
         this.props.moveCallback(this.state.folder);

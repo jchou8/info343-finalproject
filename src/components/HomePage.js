@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 
 import './styles/HomePage.css';
 
+// Main page that shows up when first logging into the app
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +22,7 @@ export default class HomePage extends Component {
         this.createCards(nextProps.folders);
     }
 
+    // Create the list of cards to render
     createCards(folders) {
         let folderIDs = [];
         if (folders) {
@@ -62,6 +64,7 @@ export default class HomePage extends Component {
                 </Col>
             );
 
+            // Sort into different categories if it's a shared folder
             if (isOwner) {
                 folderList.push(folderObj);
             } else {

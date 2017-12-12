@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { Button, Input } from 'reactstrap';
 
-import './styles/Navigation.css';
-
-// Pop-out sidebar menu, with header, current user, and folder list
-class Navigation extends Component {
+// List of folders in sidebar, along with form to create new folders
+class FolderList extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -14,22 +12,16 @@ class Navigation extends Component {
         }
     }
 
-    // testing for clicking the create folder button
-    // trying to make it toggle the section for creating folder
+    // Toggle the form to create a new folder
     toggleCreateFolder() {
         this.setState({ createActive: !this.state.createActive });
     }
 
-    closeCreateFolder() {
-        this.setState({
-            createActive: false
-        });
-    }
-
+    // Creates a folder
     createFolder(event) {
         event.preventDefault(); // don't submit
 
-        // null folder be pushed inside an empty folders root
+        // Create new empty folder
         let folder = {
             name: this.state.folderName,
             owner: this.props.user.displayName,
@@ -40,10 +32,10 @@ class Navigation extends Component {
 
         this.props.createFolderCallback(folder);
         this.setState({ folderName: '' });
-        this.closeCreateFolder();
+        this.toggleCreateFolder();
     }
 
-
+    // Alter value of input box to create a new folder
     updateFolderName(event) {
         this.setState({ folderName: event.target.value });
     }
@@ -83,15 +75,13 @@ class Navigation extends Component {
         } else {
             createFolder = (
                 <div className='sidebar-link'>
-                    <div onClick={() => this.closeCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
-                    {/*<img className="img-fluid" src="https://cdn0.iconfinder.com/data/icons/iconico-3/1024/63.png" alt="folder image" />*/}
+                    <div onClick={() => this.toggleCreateFolder()}><i className='fa fa-minus' aria-hidden='true'></i> Cancel</div>
                     <div>Folder name: <Input
                         name="text"
                         value={this.state.folderName}
                         onChange={(e) => this.updateFolderName(e)}
                         placeholder='Enter folder name...' />
                     </div>
-                    {/* <div onClick={() => this.createFolder()}><i className='fa fa-plus' aria-hidden='true'></i> Add Folder</div> */}
                     <Button
                         color="primary"
                         disabled={this.state.folderName.length === 0 || this.state.folderName.length > 30}
@@ -123,4 +113,4 @@ class Navigation extends Component {
     }
 }
 
-export default withRouter(Navigation);
+export default withRouter(FolderList);

@@ -6,7 +6,7 @@ import './styles/Navigation.css';
 
 import FolderList from './FolderList';
 
-// Pop-out sidebar menu, with header, current user, and folder list
+// Pop-out sidebar navigation menu, with header, current user, and folder list
 export default class Navigation extends Component {
   render() {
     let user = this.props.user;
@@ -24,7 +24,7 @@ export default class Navigation extends Component {
           <header className='page-header'>
             <h1 className='app-title'>
               <i className='fa fa-bookmark' aria-hidden='true'></i>
-              <span style={{color: '#98bdf9'}}> mark</span>it
+              <span style={{ color: '#9cf998' }}> mark</span>it
             </h1>
           </header>
         </Link>
@@ -37,6 +37,12 @@ export default class Navigation extends Component {
                 <div className='sidebar-username'>
                   {user.displayName}
                 </div>
+
+                <Link to='/login'>
+                  <Button color='secondary' size='sm' onClick={this.props.signOutCallback}>
+                    <i className='fa fa-sign-out' aria-hidden='true'></i> log out
+                </Button>
+                </Link>
               </div>
 
               <FolderList
@@ -45,12 +51,6 @@ export default class Navigation extends Component {
                 folders={this.props.folders}
                 createFolderCallback={this.props.createFolderCallback}
               />
-
-              <Link to='/login'>
-                <Button color='secondary' onClick={this.props.signOutCallback}>
-                  <i className='fa fa-sign-out' aria-hidden='true'></i> log out
-                </Button>
-              </Link>
             </div>
           }
 
