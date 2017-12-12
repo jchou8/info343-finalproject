@@ -14,28 +14,12 @@
 Table {
     table-layout: fixed;
 }
-/*
-th, td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}*/
-
-/*th.col-Name, td.col-Name {
-    width: 30%;
-}*/
 
 th.col-URL, td.col-URL {
-    /*width: 40%;*/
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-/*
-th.col-Added, td.col-Added {
-    width: 20%;
-}*/
 
 .bookmark-name {
     font-weight: 600;

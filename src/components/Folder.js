@@ -252,7 +252,7 @@ export default class Folder extends Component {
                     />}
             </div>);
         } else {
-            return <Alert color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
+            return <Alert className='mt-5' color='warning'>You do not have permission to view this folder! You may need to <Link to='/login'>log in</Link>.</Alert>
         }
 
         return content;

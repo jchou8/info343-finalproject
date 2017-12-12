@@ -155,7 +155,7 @@ export default class LinkList extends Component {
           <div className='col-xs-12 col-sm-6 search-bar'>
             <InputGroup>
               <InputGroupAddon aria-hidden='true'><i className='fa fa-search'></i></InputGroupAddon>
-              <Input type="text" name="searchValue" id="searchValue" onChange={(e) => this.handleChange(e)} placeholder='Search bookmarks...' />
+              <Input type="text" name="searchValue" id="searchValue" onChange={(e) => this.handleChange(e)} placeholder='Search this folder...' />
             </InputGroup>
           </div>
         </Row>

@@ -22,28 +22,31 @@ class App extends Component {
     this.state = {
       loading: true,
       navActive: false,
-      folders: {},
-      permissions: {}
+      folders: {}
     };
   }
 
   // Filter the list of folders down to what the user has permission to view
   filterFoldersByPermissions() {
     let folders = this.state.folders;
-    let perms = this.state.permissions;
+
     let filteredFolders = {};
-    if (perms && folders) {
+    if (folders) {
       let folderKeys = Object.keys(folders);
 
       folderKeys.forEach((key) => {
-        let perm = perms[key];
-        if (perm === 'owner' || perm === 'view' || perm === 'edit') {
-          filteredFolders = Object.assign(filteredFolders, { [key]: folders[key] });
+        let folder = folders[key];
+        let perm = null;
+        if (folder.users) {
+          perm = folder.users[this.state.user.uid];
+        }
+        
+        if (this.state.user.uid === folder.ownerID || perm === 'owner' || perm === 'view' || perm === 'edit') {
+          filteredFolders = Object.assign(filteredFolders, { [key]: folder });
         }
       });
     }
-    console.log(perms);
-    console.log(filteredFolders);
+
     this.setState({ folders: filteredFolders, loading: false });
   }
 
@@ -53,12 +56,6 @@ class App extends Component {
       if (user) {
         this.setState({ user: user, loading: false });
 
-        // Get user permissions
-        this.permsRef = firebase.database().ref('userPermissions/' + user.uid + '/permissions');
-        this.permsRef.on('value', (snapshot) => {
-          this.setState({ permissions: snapshot.val() }, () => this.filterFoldersByPermissions());
-        });
-
         // Get list of folders from db
         this.foldersRef = firebase.database().ref('folders');
         this.foldersRef.on('value', (snapshot) => {
@@ -66,7 +63,7 @@ class App extends Component {
         });
 
       } else {
-        this.setState({ user: null, folders: null, permissions: null, loading: false });
+        this.setState({ user: null, folders: null, loading: false });
       }
     });
   }
@@ -161,7 +158,6 @@ class App extends Component {
     let renderFolder = (props) => <Folder {...props}
       user={this.state.user}
       folders={this.state.folders}
-      folderPerms={this.state.permissions}
     />;
     let renderHomePage = (props) => <HomePage {...props}
       user={this.state.user}
