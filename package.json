@@ -2,7 +2,7 @@
   "name": "info343-finalproject",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://jchou8.github.io/info343-finalproject/",
+  "homepage": "https://jchou8.github.io/markit/",
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "firebase": "^4.7.0",
