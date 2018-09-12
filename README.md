@@ -7,7 +7,7 @@ This is a web app that allows users to save links, which will be stored in their
 * Share a folder by making it publicly viewable through a link
 * Share a folder by inviting specific users to view or edit
 
-The app can be viewed [here](https://jchou8.github.io/info343-finalproject/).
+The app can be viewed [here](https://jchou8.github.io/markit/).
 
 ## Getting started
 * Once you log in or create an account, you'll be taken to your home screen, which lists all your folders. The sidebar also allows you to navigate between your folders.
